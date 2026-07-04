@@ -1,0 +1,84 @@
+name: Setup Template
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    if: github.repository != 'Marcus-V-Freitas/MVFC.Template'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar se setup já foi feito
+        id: check
+        run: |
+          if [ -d "src/MVFC.Lib" ]; then
+            echo "needs_setup=true" >> $GITHUB_OUTPUT
+          else
+            echo "needs_setup=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Aplicar template
+        if: steps.check.outputs.needs_setup == 'true'
+        run: |
+          set -e
+          REPO_NAME="${{ github.event.repository.name }}"
+
+          echo "Configurando template para ${REPO_NAME}..."
+
+          # Substituição global em todos os arquivos (README, Props, Namespaces, etc.)
+          echo "Substituindo referências globais de MVFC.Lib por ${REPO_NAME}..."
+          find . -type f \
+            -not -path './.git/*' \
+            -not -name 'setup.yml' \
+            -exec sed -i "s|MVFC.Lib|${REPO_NAME}|g" {} +
+
+          # Ajustar placeholders específicos do build.cake
+          if [ -f "build.cake" ]; then
+            sed -i "s|<!-- SOLUTION_FILE -->|${REPO_NAME}.slnx|g" build.cake
+            sed -i "s|<!-- TEST_PROJECT_PATH -->|./tests/${REPO_NAME}.Tests/${REPO_NAME}.Tests.csproj|g" build.cake
+            sed -i "s|<!-- LIB_NAME -->|${REPO_NAME}|g" build.cake
+          fi
+
+          # Renomear arquivos e pastas
+          echo "Renomeando arquivos e pastas..."
+
+          # Solution
+          if [ -f "Template.slnx" ]; then
+            mv Template.slnx "${REPO_NAME}.slnx"
+          fi
+
+          # Projeto de src (renomeia .csproj e depois a pasta)
+          if [ -d "src/MVFC.Lib" ]; then
+            if [ -f "src/MVFC.Lib/MVFC.Lib.csproj" ]; then
+              mv "src/MVFC.Lib/MVFC.Lib.csproj" "src/MVFC.Lib/${REPO_NAME}.csproj"
+            fi
+            mv "src/MVFC.Lib" "src/${REPO_NAME}"
+          fi
+
+          # Projeto de tests (renomeia .csproj e depois a pasta)
+          if [ -d "tests/MVFC.Lib.Tests" ]; then
+            if [ -f "tests/MVFC.Lib.Tests/MVFC.Lib.Tests.csproj" ]; then
+              mv "tests/MVFC.Lib.Tests/MVFC.Lib.Tests.csproj" "tests/MVFC.Lib.Tests/${REPO_NAME}.Tests.csproj"
+            fi
+            mv "tests/MVFC.Lib.Tests" "tests/${REPO_NAME}.Tests"
+          fi
+
+          # Remover este workflow antes de commitar
+          if [ -f ".github/workflows/setup.yml" ]; then
+            git rm .github/workflows/setup.yml
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: apply template placeholders for ${GITHUB_REPOSITORY#*/}"
+          git push
