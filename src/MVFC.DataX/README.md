@@ -1,4 +1,4 @@
-# MVFC.Lib
+# MVFC.DataX
 
 [English](README.md) | [Português](README.pt-BR.md)
 
@@ -7,13 +7,13 @@
 ## Installation
 
 ```bash
-dotnet add package MVFC.Lib
+dotnet add package MVFC.DataX
 ```
 
 ## Usage
 
 ```csharp
-using MVFC.Lib;
+using MVFC.DataX;
 
 // Basic usage example
 ```

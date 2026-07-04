@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/MVFC.Lib/MVFC.Lib.csproj" />
+    <ProjectReference Include="../../src/MVFC.DataX/MVFC.DataX.csproj" />
   </ItemGroup>
 
 </Project>

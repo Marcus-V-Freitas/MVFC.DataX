@@ -19,7 +19,7 @@ Task("Restore")
     .Does(() =>
 {
     Information("Restaurando pacotes...");
-    var exitCode = StartProcess("dotnet", "restore <!-- SOLUTION_FILE -->");
+    var exitCode = StartProcess("dotnet", "restore MVFC.DataX.slnx");
 
     if (exitCode != 0)
     {
@@ -32,7 +32,7 @@ Task("Build")
     .Does(() =>
 {
     Information("Build Release...");
-    var exitCode = StartProcess("dotnet", "build <!-- SOLUTION_FILE --> --configuration Release --no-restore");
+    var exitCode = StartProcess("dotnet", "build MVFC.DataX.slnx --configuration Release --no-restore");
 
     if (exitCode != 0)
     {
@@ -44,7 +44,7 @@ Task("Test-Coverage")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    var testProject = "<!-- TEST_PROJECT_PATH -->";
+    var testProject = "./tests/MVFC.DataX.Tests/MVFC.DataX.Tests.csproj";
     var resultsDir  = "./coverage";
     var reportDir   = "./CoverageReport";
     var coverageXml = $"{resultsDir}/coverage.cobertura.xml";
@@ -105,7 +105,7 @@ Task("Test-Coverage")
     var rgPath     = FileExists(reportGeneratorExeWin) ? reportGeneratorExeWin : reportGeneratorExe;
 
     Information("Gerando relatório HTML...");
-    var rgCode = StartProcess(rgPath, $"-reports:\"{reportArgs}\" -targetdir:\"{reportDir}\" -reporttypes:\"Html;Cobertura;MarkdownSummaryGithub\" -assemblyfilters:\"+<!-- LIB_NAME -->*\" -classfilters:\"-*.Tests.*;-*.Playground.*\"");
+    var rgCode = StartProcess(rgPath, $"-reports:\"{reportArgs}\" -targetdir:\"{reportDir}\" -reporttypes:\"Html;Cobertura;MarkdownSummaryGithub\" -assemblyfilters:\"+MVFC.DataX*\" -classfilters:\"-*.Tests.*;-*.Playground.*\"");
 
     if (rgCode != 0)
     {

@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/MVFC.DataX/MVFC.DataX.csproj" />
+  <Project Path="tests/MVFC.DataX.Tests/MVFC.DataX.Tests.csproj" />
+</Solution>

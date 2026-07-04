@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="src/MVFC.Lib/MVFC.Lib.csproj" />
-  <Project Path="tests/MVFC.Lib.Tests/MVFC.Lib.Tests.csproj" />
-</Solution>

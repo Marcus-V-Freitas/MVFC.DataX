@@ -8,9 +8,9 @@
 	<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <IsPackable>true</IsPackable>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageProjectUrl>https://www.nuget.org/packages/MVFC.Lib</PackageProjectUrl>
+    <PackageProjectUrl>https://www.nuget.org/packages/MVFC.DataX</PackageProjectUrl>
     <PackageTags><!-- TAGS --></PackageTags>
-    <RepositoryUrl>https://github.com/Marcus-V-Freitas/MVFC.Lib</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Marcus-V-Freitas/MVFC.DataX</RepositoryUrl>
     <Description><!-- DESCRIPTION --></Description>
   </PropertyGroup>
 
