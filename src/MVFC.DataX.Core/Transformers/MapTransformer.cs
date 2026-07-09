@@ -23,7 +23,7 @@ public sealed class MapTransformer<TIn, TOut>(Func<TIn, TOut?> mapFunc) : IDataT
 
             if (ex != null)
             {
-                yield return DataResult.Failure<TOut>([new DataError("Exception", ex.Message, item)]);
+                yield return DataResult.Failure<TOut>([DataError.FromException(ex, attemptedValue: item)]);
                 continue;
             }
 

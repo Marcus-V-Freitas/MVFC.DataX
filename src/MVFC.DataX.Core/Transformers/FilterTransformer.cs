@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Core.Transformers;
+namespace MVFC.DataX.Core.Transformers;
 
 public sealed class FilterTransformer<T>(Func<T, bool> predicate) : IDataTransformer<T, T>
 {
@@ -23,7 +23,7 @@ public sealed class FilterTransformer<T>(Func<T, bool> predicate) : IDataTransfo
 
             if (ex != null)
             {
-                yield return DataResult.Failure<T>([new DataError("Exception", ex.Message, item)]);
+                yield return DataResult.Failure<T>([DataError.FromException(ex, attemptedValue: item)]);
                 continue;
             }
 

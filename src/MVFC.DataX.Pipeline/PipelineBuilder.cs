@@ -16,10 +16,7 @@ public static class PipelineBuilder
         if (readers == null || readers.Length == 0)
             throw new ArgumentException("At least one reader must be provided.", nameof(readers));
 
-        if (readers.Length == 1)
-            return new(readers[0]);
-
-        return new(new MergeReader<TInput>(readers));
+        return readers.Length == 1 ? new(readers[0]) : new(new MergeReader<TInput>(readers));
     }
 }
 
@@ -41,11 +38,14 @@ public sealed class PipelineBuilder<TInput>
     public PipelineBuilder<TInput, TInput> Take(int count)
         => TransformWith(new TakeTransformer<TInput>(count));
 
-    public PipelineBuilder<TInput, TInput> Distinct(IEqualityComparer<TInput>? comparer = null)
-        => TransformWith(new DistinctTransformer<TInput>(comparer));
+    public PipelineBuilder<TInput, TInput> Filter(Func<TInput, bool> predicate)
+        => TransformWith(new FilterTransformer<TInput>(predicate));
 
-    public PipelineBuilder<TInput, TInput> OrderBy<TKey>(Func<TInput, TKey> keySelector, bool descending = false, IComparer<TKey>? comparer = null)
-        => TransformWith(new OrderByTransformer<TInput, TKey>(keySelector, descending, comparer));
+    public PipelineBuilder<TInput, TInput> Distinct(IEqualityComparer<TInput>? comparer = null, int? maxCapacity = null)
+        => TransformWith(new DistinctTransformer<TInput>(comparer, maxCapacity));
+
+    public PipelineBuilder<TInput, TInput> OrderBy<TKey>(Func<TInput, TKey> keySelector, bool descending = false, IComparer<TKey>? comparer = null, int? maxItems = null)
+        => TransformWith(new OrderByTransformer<TInput, TKey>(keySelector, descending, comparer, maxItems));
 
     public PipelineBuilder<TInput, TOut> FlatMap<TOut>(Func<TInput, IEnumerable<TOut>?> mapFunc)
         => TransformWith(new FlatMapTransformer<TInput, TOut>(mapFunc));
@@ -65,6 +65,7 @@ public sealed class PipelineBuilder<TInput, TOutput>
     private IDataWriter<DataResult<TOutput>>? _deadLetterWriter;
     private PipelineOptions _options = new();
     private Func<PipelineStatistics, Task>? _onCompleted;
+    private readonly List<IPipelineMiddleware<TInput>> _middlewares = [];
 
     internal PipelineBuilder(IDataReader<TInput> reader, IDataTransformer<TInput, TOutput> transformer)
     {
@@ -72,17 +73,21 @@ public sealed class PipelineBuilder<TInput, TOutput>
         _transformer = transformer;
     }
 
-    private PipelineBuilder(IDataReader<TInput> reader, IDataTransformer<TInput, TOutput> transformer, PipelineOptions options)
+    private PipelineBuilder(IDataReader<TInput> reader, IDataTransformer<TInput, TOutput> transformer, PipelineOptions options, List<IPipelineMiddleware<TInput>>? middlewares = null)
     {
         _reader = reader;
         _transformer = transformer;
         _options = options;
+        if (middlewares != null)
+        {
+            _middlewares.AddRange(middlewares);
+        }
     }
 
     public PipelineBuilder<TInput, TNext> TransformWith<TNext>(IDataTransformer<TOutput, TNext> nextTransformer)
     {
         var composite = new CompositeTransformer<TInput, TOutput, TNext>(_transformer, nextTransformer);
-        return new PipelineBuilder<TInput, TNext>(_reader, composite, _options);
+        return new PipelineBuilder<TInput, TNext>(_reader, composite, _options, _middlewares);
     }
 
     public PipelineBuilder<TInput, TOutput> Skip(int count)
@@ -91,11 +96,14 @@ public sealed class PipelineBuilder<TInput, TOutput>
     public PipelineBuilder<TInput, TOutput> Take(int count)
         => TransformWith(new TakeTransformer<TOutput>(count));
 
-    public PipelineBuilder<TInput, TOutput> Distinct(IEqualityComparer<TOutput>? comparer = null)
-        => TransformWith(new DistinctTransformer<TOutput>(comparer));
+    public PipelineBuilder<TInput, TOutput> Filter(Func<TOutput, bool> predicate)
+        => TransformWith(new FilterTransformer<TOutput>(predicate));
 
-    public PipelineBuilder<TInput, TOutput> OrderBy<TKey>(Func<TOutput, TKey> keySelector, bool descending = false, IComparer<TKey>? comparer = null)
-        => TransformWith(new OrderByTransformer<TOutput, TKey>(keySelector, descending, comparer));
+    public PipelineBuilder<TInput, TOutput> Distinct(IEqualityComparer<TOutput>? comparer = null, int? maxCapacity = null)
+        => TransformWith(new DistinctTransformer<TOutput>(comparer, maxCapacity));
+
+    public PipelineBuilder<TInput, TOutput> OrderBy<TKey>(Func<TOutput, TKey> keySelector, bool descending = false, IComparer<TKey>? comparer = null, int? maxItems = null)
+        => TransformWith(new OrderByTransformer<TOutput, TKey>(keySelector, descending, comparer, maxItems));
 
     public PipelineBuilder<TInput, TNext> FlatMap<TNext>(Func<TOutput, IEnumerable<TNext>?> mapFunc)
         => TransformWith(new FlatMapTransformer<TOutput, TNext>(mapFunc));
@@ -114,6 +122,8 @@ public sealed class PipelineBuilder<TInput, TOutput>
 
     public PipelineBuilder<TInput, TOutput> ReplaceWriter(Func<IDataWriter<TOutput>, IDataWriter<TOutput>> replaceFunc)
     {
+        ArgumentNullException.ThrowIfNull(replaceFunc);
+
         if (_writer != null)
         {
             _writer = replaceFunc(_writer);
@@ -139,6 +149,12 @@ public sealed class PipelineBuilder<TInput, TOutput>
         return this;
     }
 
+    public PipelineBuilder<TInput, TOutput> OnError(Func<Exception, ErrorAction> classifier)
+    {
+        _options = _options with { ErrorClassifier = classifier };
+        return this;
+    }
+
     public PipelineBuilder<TInput, TOutput> WithChannelCapacity(int capacity)
     {
         _options = _options with { ChannelCapacity = capacity };
@@ -148,6 +164,38 @@ public sealed class PipelineBuilder<TInput, TOutput>
     public PipelineBuilder<TInput, TOutput> WithRetry(int maxRetries, TimeSpan delay)
     {
         _options = _options with { MaxRetries = maxRetries, RetryDelay = delay };
+        return this;
+    }
+
+    public PipelineBuilder<TInput, TOutput> WithExponentialBackoff(int maxRetries, TimeSpan baseDelay, TimeSpan? maxDelay = null)
+    {
+        _options = _options with
+        {
+            MaxRetries = maxRetries,
+            RetryDelay = baseDelay,
+            UseExponentialBackoff = true,
+            MaxRetryDelay = maxDelay
+        };
+        return this;
+    }
+
+    public PipelineBuilder<TInput, TOutput> OnRetry(Action<Exception, int, TimeSpan> callback)
+    {
+        _options = _options with { OnRetry = callback };
+        return this;
+    }
+
+    public PipelineBuilder<TInput, TOutput> Use(IPipelineMiddleware<TInput> middleware)
+    {
+        ArgumentNullException.ThrowIfNull(middleware);
+        _middlewares.Add(middleware);
+        return this;
+    }
+
+    public PipelineBuilder<TInput, TOutput> Use(Func<IAsyncEnumerable<TInput>, CancellationToken, IAsyncEnumerable<TInput>> middlewareFunc)
+    {
+        ArgumentNullException.ThrowIfNull(middlewareFunc);
+        _middlewares.Add(new DelegatePipelineMiddleware<TInput>(middlewareFunc));
         return this;
     }
 
@@ -168,7 +216,8 @@ public sealed class PipelineBuilder<TInput, TOutput>
             _writer,
             _options,
             _deadLetterWriter,
-            _onCompleted);
+            _onCompleted,
+            _middlewares);
 
         return new DataPipeline<TInput, TOutput>(engine);
     }

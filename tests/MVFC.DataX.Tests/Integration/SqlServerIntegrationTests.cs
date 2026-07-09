@@ -1,5 +1,6 @@
-﻿namespace MVFC.DataX.Tests.Integration;
+namespace MVFC.DataX.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public sealed class SqlServerIntegrationTests : IAsyncLifetime
 {
     private readonly MsSqlContainer _mssql = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04")

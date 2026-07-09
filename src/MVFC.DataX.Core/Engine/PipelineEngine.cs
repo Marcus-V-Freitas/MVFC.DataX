@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Core.Engine;
+namespace MVFC.DataX.Core.Engine;
 
 public sealed class PipelineEngine<TInput, TOutput>(
     IDataReader<TInput> reader,
@@ -6,7 +6,8 @@ public sealed class PipelineEngine<TInput, TOutput>(
     IDataWriter<TOutput> writer,
     PipelineOptions options,
     IDataWriter<DataResult<TOutput>>? deadLetterWriter = null,
-    Func<PipelineStatistics, Task>? onCompleted = null) : IAsyncDisposable
+    Func<PipelineStatistics, Task>? onCompleted = null,
+    IEnumerable<IPipelineMiddleware<TInput>>? middlewares = null) : IAsyncDisposable
 {
     private readonly IDataReader<TInput> _reader = reader;
     private readonly IDataTransformer<TInput, TOutput> _transformer = transformer;
@@ -14,6 +15,7 @@ public sealed class PipelineEngine<TInput, TOutput>(
     private readonly PipelineOptions _options = options ?? throw new ArgumentNullException(nameof(options));
     private readonly IDataWriter<DataResult<TOutput>>? _deadLetterWriter = deadLetterWriter;
     private readonly Func<PipelineStatistics, Task>? _onCompleted = onCompleted;
+    private readonly IEnumerable<IPipelineMiddleware<TInput>> _middlewares = middlewares ?? [];
 
     public async Task<PipelineStatistics> RunAsync(CancellationToken ct = default)
     {
@@ -52,7 +54,7 @@ public sealed class PipelineEngine<TInput, TOutput>(
             processTasks.Add(Task.Run(() => ProcessWorkerAsync(inputChannel.Reader, errors, ct), ct));
         }
 
-        await readTask.ConfigureAwait(false);
+        await Task.WhenAll([readTask, ..processTasks]).ConfigureAwait(false);
 
         long totalSucceeded = 0;
         long totalFailed = 0;
@@ -83,41 +85,93 @@ public sealed class PipelineEngine<TInput, TOutput>(
         long localFailed = 0;
         long localSkipped = 0;
         var inputEnumerable = reader.ReadAllAsync(ct);
+        foreach (var middleware in _middlewares)
+        {
+            inputEnumerable = middleware.InvokeAsync(inputEnumerable, ct);
+        }
         var transformedStream = _transformer.TransformAsync(inputEnumerable, ct);
 
         var batchSize = _options.BatchSize > 0 ? _options.BatchSize : 100;
         var batch = new List<TOutput>(batchSize);
 
-        await foreach (var result in transformedStream.ConfigureAwait(false))
+        try
         {
-            if (result.IsSuccess && result.Value is not null)
+            await foreach (var result in transformedStream.ConfigureAwait(false))
             {
-                batch.Add(result.Value);
-                if (batch.Count >= batchSize)
+                if (result.IsSuccess && result.Value is not null)
                 {
-                    await WriteBatchWithRetryAsync(batch, ct).ConfigureAwait(false);
-                    localSucceeded += batch.Count;
-                    batch = new List<TOutput>(batchSize);
+                    batch.Add(result.Value);
+                    if (batch.Count >= batchSize)
+                    {
+                        var status = await WriteBatchWithRetryAsync(batch, errors, ct).ConfigureAwait(false);
+                        UpdateCounters(status, batch.Count, ref localSucceeded, ref localSkipped, ref localFailed);
+                        batch.Clear();
+                    }
+                }
+                else if (result.IsSkipped)
+                {
+                    localSkipped++;
+                }
+                else
+                {
+                    localFailed++;
+                    await HandleFailureAsync(result, errors, ct).ConfigureAwait(false);
                 }
             }
-            else if (result.IsSkipped)
+
+            if (batch.Count > 0)
             {
-                localSkipped++;
-            }
-            else
-            {
-                localFailed++;
-                await HandleFailureAsync(result, errors, ct).ConfigureAwait(false);
+                var status = await WriteBatchWithRetryAsync(batch, errors, ct).ConfigureAwait(false);
+                UpdateCounters(status, batch.Count, ref localSucceeded, ref localSkipped, ref localFailed);
             }
         }
-
-        if (batch.Count > 0)
+        catch (Exception ex)
         {
-            await WriteBatchWithRetryAsync(batch, ct).ConfigureAwait(false);
-            localSucceeded += batch.Count;
+            var (exFailed, exSkipped) = await HandleTransformerExceptionAsync(ex, batch, errors, ct).ConfigureAwait(false);
+            localFailed += exFailed;
+            localSkipped += exSkipped;
         }
 
         return (localSucceeded, localFailed, localSkipped);
+    }
+
+    private static void UpdateCounters(WriteStatus status, int batchCount, ref long succeeded, ref long skipped, ref long failed)
+    {
+        switch (status)
+        {
+            case WriteStatus.Success:
+                succeeded += batchCount;
+                break;
+            case WriteStatus.Skipped:
+                skipped += batchCount;
+                break;
+            case WriteStatus.Failed:
+                failed += batchCount;
+                break;
+        }
+    }
+
+    private async Task<(long Failed, long Skipped)> HandleTransformerExceptionAsync(Exception ex, List<TOutput> batch, ConcurrentQueue<DataError> errors, CancellationToken ct)
+    {
+        var action = _options.ErrorClassifier?.Invoke(ex) ?? ErrorAction.Abort;
+        if (action == ErrorAction.Abort)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex).Throw();
+        }
+        if (action == ErrorAction.Skip)
+        {
+            return (0, batch.Count);
+        }
+        if (action == ErrorAction.DeadLetter && _deadLetterWriter != null)
+        {
+            foreach (var item in batch)
+            {
+                var failureResult = DataResult.Failure<TOutput>([DataError.FromException(ex, propertyName: "Transformer", attemptedValue: item)]);
+                await HandleFailureAsync(failureResult, errors, ct).ConfigureAwait(false);
+            }
+            return (batch.Count, 0);
+        }
+        return (0, 0);
     }
 
     private async Task HandleFailureAsync(DataResult<TOutput> result, ConcurrentQueue<DataError> errors, CancellationToken ct)
@@ -133,7 +187,7 @@ public sealed class PipelineEngine<TInput, TOutput>(
         }
     }
 
-    private async Task WriteBatchWithRetryAsync(IReadOnlyList<TOutput> batch, CancellationToken ct)
+    private async Task<WriteStatus> WriteBatchWithRetryAsync(IReadOnlyList<TOutput> batch, ConcurrentQueue<DataError> errors, CancellationToken ct)
     {
         var retries = 0;
         while (true)
@@ -141,27 +195,105 @@ public sealed class PipelineEngine<TInput, TOutput>(
             try
             {
                 await _writer.WriteBatchAsync(batch, ct).ConfigureAwait(false);
-                return;
+                return WriteStatus.Success;
             }
             catch (OperationCanceledException)
             {
                 throw;
             }
-            catch (Exception ex) when (retries < _options.MaxRetries && (_options.RetryPredicate == null || _options.RetryPredicate(ex)))
+            catch (Exception ex)
             {
-                retries++;
-                if (_options.RetryDelay > TimeSpan.Zero)
+                var (shouldRetry, delay) = EvaluateRetry(ex, ref retries);
+                if (shouldRetry)
                 {
-                    var delay = _options.RetryDelay;
-                    if (_options.UseJitter)
+                    if (delay > TimeSpan.Zero)
                     {
-                        var jitter = TimeSpan.FromMilliseconds(Random.Shared.Next(0, 100));
-                        delay += jitter;
+                        await Task.Delay(delay, ct).ConfigureAwait(false);
                     }
-                    await Task.Delay(delay, ct).ConfigureAwait(false);
+                    continue;
                 }
+
+                return await HandleWriteExceptionAsync(ex, batch, errors, ct).ConfigureAwait(false);
             }
         }
+    }
+
+    private (bool ShouldRetry, TimeSpan Delay) EvaluateRetry(Exception ex, ref int retries)
+    {
+        var canRetry = retries < _options.MaxRetries && (_options.RetryPredicate == null || _options.RetryPredicate(ex));
+        var action = _options.ErrorClassifier?.Invoke(ex) ?? (canRetry ? ErrorAction.Retry : ErrorAction.Abort);
+
+        if (action == ErrorAction.Retry && canRetry)
+        {
+            retries++;
+            var delay = CalculateRetryDelay(retries);
+            _options.OnRetry?.Invoke(ex, retries, delay);
+            return (true, delay);
+        }
+
+        return (false, TimeSpan.Zero);
+    }
+
+    private TimeSpan CalculateRetryDelay(int retries)
+    {
+        var delay = _options.RetryDelay;
+        if (delay <= TimeSpan.Zero) return TimeSpan.Zero;
+
+        if (_options.UseExponentialBackoff)
+        {
+            var factor = Math.Pow(2, retries - 1);
+            try
+            {
+                delay = TimeSpan.FromTicks((long)(delay.Ticks * factor));
+            }
+            catch (OverflowException)
+            {
+                delay = TimeSpan.MaxValue;
+            }
+        }
+
+        if (_options.MaxRetryDelay.HasValue && delay > _options.MaxRetryDelay.Value)
+        {
+            delay = _options.MaxRetryDelay.Value;
+        }
+
+        if (_options.UseJitter)
+        {
+            var jitter = TimeSpan.FromMilliseconds(Random.Shared.Next(0, 100));
+            delay += jitter;
+        }
+
+        return delay;
+    }
+
+    private async Task<WriteStatus> HandleWriteExceptionAsync(Exception ex, IReadOnlyList<TOutput> batch, ConcurrentQueue<DataError> errors, CancellationToken ct)
+    {
+        var action = _options.ErrorClassifier?.Invoke(ex) ?? ErrorAction.Abort;
+
+        if (action == ErrorAction.Skip)
+        {
+            return WriteStatus.Skipped;
+        }
+
+        if (action == ErrorAction.DeadLetter && _deadLetterWriter != null)
+        {
+            foreach (var item in batch)
+            {
+                var failureResult = DataResult.Failure<TOutput>([DataError.FromException(ex, propertyName: "Writer", attemptedValue: item)]);
+                await HandleFailureAsync(failureResult, errors, ct).ConfigureAwait(false);
+            }
+            return WriteStatus.Failed;
+        }
+
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex).Throw();
+        return WriteStatus.Failed; // unreachable
+    }
+
+    private enum WriteStatus
+    {
+        Success,
+        Skipped,
+        Failed
     }
 
     public async ValueTask DisposeAsync()

@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Tests;
+namespace MVFC.DataX.Tests;
 
 public static class AsyncEnumerableExtensions
 {
@@ -24,5 +24,15 @@ public static class AsyncEnumerableExtensions
             yield return item;
         }
     }
-}
 
+    public static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(this IEnumerable<T> source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        foreach (var item in source)
+        {
+            await Task.Yield();
+            yield return item;
+        }
+    }
+}

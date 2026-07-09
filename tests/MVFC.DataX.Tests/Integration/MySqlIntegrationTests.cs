@@ -1,5 +1,6 @@
 namespace MVFC.DataX.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public sealed class MySqlIntegrationTests : IAsyncLifetime
 {
     private readonly MySqlContainer _mysql = new MySqlBuilder("mysql:8.0")

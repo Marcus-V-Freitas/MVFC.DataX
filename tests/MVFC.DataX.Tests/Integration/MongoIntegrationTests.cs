@@ -1,5 +1,6 @@
 namespace MVFC.DataX.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public sealed class MongoIntegrationTests : IAsyncLifetime
 {
     private readonly MongoDbContainer _mongo = new MongoDbBuilder("mongo:8.0").Build();

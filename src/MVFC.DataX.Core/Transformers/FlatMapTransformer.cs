@@ -24,7 +24,7 @@ public sealed class FlatMapTransformer<TIn, TOut>(Func<TIn, IEnumerable<TOut>?> 
 
             if (ex != null)
             {
-                yield return DataResult.Failure<TOut>([new DataError("Exception", ex.Message, item)]);
+                yield return DataResult.Failure<TOut>([DataError.FromException(ex, attemptedValue: item)]);
                 continue;
             }
 

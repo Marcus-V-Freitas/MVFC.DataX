@@ -1,7 +1,8 @@
-﻿
+
 
 namespace MVFC.DataX.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public sealed class FileSystemIntegrationTests
 {
     [Fact]

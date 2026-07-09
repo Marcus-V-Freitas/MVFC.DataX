@@ -1,5 +1,6 @@
-﻿namespace MVFC.DataX.Tests.Integration;
+namespace MVFC.DataX.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public sealed class SqsIntegrationTests : IAsyncLifetime
 {
     private readonly LocalStackContainer _localStack = new LocalStackBuilder("localstack/localstack:3.8.1")

@@ -8,6 +8,22 @@ public static class PipelineBuilderExtensions
     {
         return builder.ReplaceWriter(writer => new ResilientDataWriter<TOutput>(writer, resiliencePipeline));
     }
+
+    public static PipelineBuilder<TInput, TOutput> WithPolly<TInput, TOutput>(
+        this PipelineBuilder<TInput, TOutput> builder,
+        ResiliencePipeline resiliencePipeline)
+    {
+        return builder.WithResiliencePolicy(resiliencePipeline);
+    }
+
+    public static PipelineBuilder<TInput, TOutput> WithExponentialBackoff<TInput, TOutput>(
+        this PipelineBuilder<TInput, TOutput> builder,
+        int maxRetries,
+        TimeSpan baseDelay,
+        TimeSpan? maxDelay = null)
+    {
+        return builder.WithExponentialBackoff(maxRetries, baseDelay, maxDelay);
+    }
 }
 
 internal sealed class ResilientDataWriter<T>(IDataWriter<T> innerWriter, ResiliencePipeline pipeline) : IDataWriter<T>

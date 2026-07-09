@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Core.Transformers;
+namespace MVFC.DataX.Core.Transformers;
 
 public sealed class AggregateTransformer<TIn, TAccumulate>(
     TAccumulate seed,
@@ -30,7 +30,7 @@ public sealed class AggregateTransformer<TIn, TAccumulate>(
         }
 
         yield return ex != null
-            ? DataResult.Failure<TAccumulate>([new DataError("Exception", ex.Message, failedItem)])
+            ? DataResult.Failure<TAccumulate>([DataError.FromException(ex, attemptedValue: failedItem)])
             : DataResult.Success(current);
     }
 }

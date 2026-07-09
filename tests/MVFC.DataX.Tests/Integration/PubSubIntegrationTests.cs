@@ -1,5 +1,6 @@
-﻿namespace MVFC.DataX.Tests.Integration;
+namespace MVFC.DataX.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public sealed class PubSubIntegrationTests : IAsyncLifetime
 {
     private readonly PubSubContainer _pubsub = new PubSubBuilder("gcr.io/google.com/cloudsdktool/cloud-sdk:emulators")

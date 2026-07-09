@@ -1,5 +1,6 @@
-﻿namespace MVFC.DataX.Tests.Integration;
+namespace MVFC.DataX.Tests.Integration;
 
+[Trait("Category", "Integration")]
 public sealed class RabbitMqIntegrationTests : IAsyncLifetime
 {
     private readonly RabbitMqContainer _rabbitmq = new RabbitMqBuilder("rabbitmq:3.11")

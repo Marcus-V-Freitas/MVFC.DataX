@@ -9,4 +9,8 @@ public sealed record PipelineOptions
     public TimeSpan RetryDelay { get; init; } = TimeSpan.FromSeconds(1);
     public Func<Exception, bool>? RetryPredicate { get; init; }
     public bool UseJitter { get; init; } = true;
+    public bool UseExponentialBackoff { get; init; }
+    public TimeSpan? MaxRetryDelay { get; init; }
+    public Action<Exception, int, TimeSpan>? OnRetry { get; init; }
+    public Func<Exception, ErrorAction>? ErrorClassifier { get; init; }
 }
