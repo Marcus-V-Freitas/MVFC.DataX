@@ -36,7 +36,7 @@ public sealed class SqsIntegrationTests : IAsyncLifetime
 
         // Act - Write single and empty
         await writer.WriteAsync(new User { Id = 3, Name = "Charlie" }, TestContext.Current.CancellationToken);
-        await writer.WriteBatchAsync(Array.Empty<User>(), TestContext.Current.CancellationToken);
+        await writer.WriteBatchAsync([], TestContext.Current.CancellationToken);
 
         // Act - Write batch
         await writer.WriteBatchAsync(

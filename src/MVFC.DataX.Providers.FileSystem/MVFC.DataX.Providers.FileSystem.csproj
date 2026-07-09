@@ -1,15 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\MVFC.DataX.Core\MVFC.DataX.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="CsvHelper" />
-    <PackageReference Include="Parquet.Net" />
-  </ItemGroup>
-
-    <PropertyGroup>
+  <PropertyGroup>
     <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -24,5 +15,19 @@
     <RepositoryUrl>https://github.com/Marcus-V-Freitas/MVFC.DataX</RepositoryUrl>
     <Description>MVFC.DataX.Providers.FileSystem module for MVFC.DataX.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" />
+    <PackageReference Include="Parquet.Net" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MVFC.DataX.Core\MVFC.DataX.Core.csproj" />
+  </ItemGroup>
 
 </Project>
