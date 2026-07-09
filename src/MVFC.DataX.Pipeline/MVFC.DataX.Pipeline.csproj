@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Authors>Marcus Vinicius de Freitas Costa</Authors>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <IsPackable>true</IsPackable>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://www.nuget.org/packages/MVFC.DataX.Pipeline</PackageProjectUrl>
+    <PackageTags>etl;data;pipeline;pipeline</PackageTags>
+    <RepositoryUrl>https://github.com/Marcus-V-Freitas/MVFC.DataX</RepositoryUrl>
+    <Description>MVFC.DataX.Pipeline module for MVFC.DataX.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MVFC.DataX.Core\MVFC.DataX.Core.csproj" />
+  </ItemGroup>
+
+</Project>

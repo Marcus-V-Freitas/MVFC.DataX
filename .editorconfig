@@ -332,6 +332,9 @@ dotnet_naming_rule.local_functions_must_be_pascal.severity = warning
 # 11. DIAGNÓSTICOS ROSLYN — IDE (code style)
 # ──────────────────────────────────────────────────────────
 
+# Desabilitar CA2007 (Não await em métodos async)
+dotnet_diagnostic.CA2007.severity = none
+
 # Remover usings desnecessários
 dotnet_diagnostic.IDE0005.severity = warning
 
@@ -428,11 +431,17 @@ dotnet_diagnostic.CA1715.severity = suggestion
 # 13. SONARANALYZER — principais
 # ──────────────────────────────────────────────────────────
 
+# Métodos não devem ter mais de N parâmetros (padrão 7)
+dotnet_diagnostic.S107.severity = none
+
+# Testes não devem capturar exceções genéricas
+dotnet_diagnostic.CA1031.severity = none
+
 # Não usar DateTime.Now (usar UtcNow)
 dotnet_diagnostic.S6566.severity = warning
 
 # Não usar string.Format quando interpolação é possível
-dotnet_diagnostic.S4457.severity = suggestion
+dotnet_diagnostic.S4457.severity = none
 
 # Métodos não devem ter mais de N parâmetros (padrão 7)
 dotnet_diagnostic.S107.severity  = suggestion

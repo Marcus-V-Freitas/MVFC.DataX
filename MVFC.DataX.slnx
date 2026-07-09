@@ -1,4 +1,19 @@
 <Solution>
-  <Project Path="src/MVFC.DataX/MVFC.DataX.csproj" />
-  <Project Path="tests/MVFC.DataX.Tests/MVFC.DataX.Tests.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/MVFC.DataX.Core/MVFC.DataX.Core.csproj" />
+    <Project Path="src/MVFC.DataX.Pipeline/MVFC.DataX.Pipeline.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.FileSystem/MVFC.DataX.Providers.FileSystem.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.MySql/MVFC.DataX.Providers.MySql.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.Postgres/MVFC.DataX.Providers.Postgres.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.PubSub/MVFC.DataX.Providers.PubSub.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.RabbitMQ/MVFC.DataX.Providers.RabbitMQ.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.SqlServer/MVFC.DataX.Providers.SqlServer.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.SQS/MVFC.DataX.Providers.SQS.csproj" />
+    <Project Path="src/MVFC.DataX.Readers.Http/MVFC.DataX.Readers.Http.csproj" />
+    <Project Path="src/MVFC.DataX.Validation/MVFC.DataX.Validation.csproj" />
+    <Project Path="src/MVFC.DataX.Providers.MongoDB/MVFC.DataX.Providers.MongoDB.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MVFC.DataX.Tests/MVFC.DataX.Tests.csproj" />
+  </Folder>
 </Solution>
