@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Tests;
+namespace MVFC.DataX.Tests;
 
 public sealed class PipelineTests : IAsyncLifetime
 {
@@ -53,14 +53,16 @@ public sealed class PipelineTests : IAsyncLifetime
 
         // Assert
         stats.Succeeded.Should().Be(1);
-        stats.Failed.Should().Be(1);
-        stats.Errors.Should().ContainSingle().Which.PropertyName.Should().Be("Name");
+        stats.Failed.Should().Be(2);
+        stats.Errors.Should().HaveCount(2);
+        stats.Errors.Should().Contain(e => e.PropertyName == "Name");
+        stats.Errors.Should().Contain(e => e.PropertyName == "Mapping");
 
         var mongoClient = new MongoClient(_mongo.GetConnectionString());
         var collection = mongoClient.GetDatabase("testdb").GetCollection<BankInfo>("banks");
         var saved = await collection.Find(FilterDefinition<BankInfo>.Empty).ToListAsync(TestContext.Current.CancellationToken);
         saved.Should().ContainSingle().Which.Name.Should().Be("B1");
 
-        await dlqWriter.Received(1).WriteAsync(Arg.Any<DataResult<BankInfo>>(), Arg.Any<CancellationToken>());
+        await dlqWriter.Received(2).WriteAsync(Arg.Any<DataResult<BankInfo>>(), Arg.Any<CancellationToken>());
     }
 }

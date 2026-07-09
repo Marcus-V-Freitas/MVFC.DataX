@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Core.Transformers;
+namespace MVFC.DataX.Core.Transformers;
 
 public sealed class MapTransformer<TIn, TOut>(Func<TIn, TOut?> mapFunc) : IDataTransformer<TIn, TOut>
 {
@@ -28,7 +28,10 @@ public sealed class MapTransformer<TIn, TOut>(Func<TIn, TOut?> mapFunc) : IDataT
             }
 
             if (mapped is null)
+            {
+                yield return DataResult.Failure<TOut>([new DataError("Mapping", "Mapping returned null", item)]);
                 continue;
+            }
 
             yield return DataResult.Success(mapped);
         }

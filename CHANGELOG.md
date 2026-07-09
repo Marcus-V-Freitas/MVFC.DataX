@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-07-09
+
+### Added
+
+- Introduced `MVFC.DataX.Resilience` package for retry policies and fault tolerance.
+- Implemented `IPipelineMiddleware` architecture for pipeline interception and hooks.
+- Added `MergeReader` and `IQueryableReader` for merging and querying data sources.
+- Added `CONTRIBUTING.md` guidelines.
+- Added comprehensive tests for pipeline cancellation, error handling, memory constraints, and models coverage.
+
+### Changed
+
+- Improved transformers (`MapTransformer`, `FluentTransformer`) to explicitly return failures for null mapping results instead of skipping.
+- Moved `PipelineOptions` to `MVFC.DataX.Core.Models`.
+- Refactored global `using` directives across all projects for better organization.
+- Updated core interfaces (`IDataReader`, `IDataTransformer`, `IDataWriter`) and `DataResult` to support new features.
+
 ## [1.0.1] - 2026-07-08
 
 ### Fixed
@@ -25,5 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Standardized all `.csproj` files with NuGet metadata, `TargetFrameworks` (.NET 9/10), tags, and repository information.
 - Created comprehensive `README.md` and `README.pt-br.md` files for the repository root and all 12 individual projects, featuring complete API signatures and real-world C# examples.
 
+[1.1.0]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.0.0...v1.1.0
 [1.0.1]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Marcus-V-Freitas/MVFC.DataX/releases/tag/v1.0.0

@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Tests.Integration;
+﻿namespace MVFC.DataX.Tests.Integration;
 
 public sealed class RabbitMqIntegrationTests : IAsyncLifetime
 {
@@ -72,7 +72,7 @@ public sealed class RabbitMqIntegrationTests : IAsyncLifetime
     {
         // Arrange
         var factory = new ConnectionFactory { Uri = new Uri(_rabbitmq.GetConnectionString()) };
-        
+
         using var connection = await factory.CreateConnectionAsync(TestContext.Current.CancellationToken);
         using var channel = await connection.CreateChannelAsync(null, TestContext.Current.CancellationToken);
         await channel.QueueDeclareAsync("empty-queue", false, false, false, null, false, TestContext.Current.CancellationToken);
@@ -86,5 +86,55 @@ public sealed class RabbitMqIntegrationTests : IAsyncLifetime
             await foreach (var item in reader.ReadAsync(cts.Token)) { }
         };
         await act.Should().ThrowAsync<OperationCanceledException>();
+    }
+
+    [Fact]
+    public async Task ReadAsync_InvalidMessage_ShouldCatchAndNack()
+    {
+        // Arrange
+        var factory = new ConnectionFactory { Uri = new Uri(_rabbitmq.GetConnectionString()) };
+        var queueName = "error-queue";
+
+        using var connection = await factory.CreateConnectionAsync(TestContext.Current.CancellationToken);
+        using var channel = await connection.CreateChannelAsync(null, TestContext.Current.CancellationToken);
+        await channel.QueueDeclareAsync(queueName, false, false, false, null, false, TestContext.Current.CancellationToken);
+
+        var writer = new RabbitMqDataWriter<User>(
+            factory,
+            exchange: string.Empty,
+            routingKey: queueName,
+            u => Encoding.UTF8.GetBytes(System.Text.Json.JsonSerializer.Serialize(u)));
+
+        using var writerResource = writer;
+        await writer.WriteBatchAsync(
+        [
+            new User { Id = 1, Name = "Bad1" },
+            new User { Id = 2, Name = "Good" },
+            new User { Id = 3, Name = "Bad2" }
+        ], TestContext.Current.CancellationToken);
+
+        using var reader = new RabbitMqDataReader<User>(
+            factory,
+            queueName,
+            b =>
+            {
+                var u = System.Text.Json.JsonSerializer.Deserialize<User>(Encoding.UTF8.GetString(b))!;
+                if (u.Name!.StartsWith("Bad", StringComparison.OrdinalIgnoreCase))
+                    throw new Exception("Bad message");
+                return u;
+            });
+
+        // Act
+        var results = new List<User>();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        await foreach (var item in reader.ReadAsync(cts.Token))
+        {
+            results.Add(item);
+            if (results.Count == 1) break;
+        }
+
+        // Assert
+        results.Should().HaveCount(1);
+        results[0].Name.Should().Be("Good");
     }
 }

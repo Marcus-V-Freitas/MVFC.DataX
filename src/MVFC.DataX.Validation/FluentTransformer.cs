@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Validation;
+namespace MVFC.DataX.Validation;
 
 public sealed class FluentTransformer<TInput, TOutput>(Func<TInput, TOutput?> mapFunc, IValidator<TOutput> validator) : IDataTransformer<TInput, TOutput>
 {
@@ -13,7 +13,10 @@ public sealed class FluentTransformer<TInput, TOutput>(Func<TInput, TOutput?> ma
         {
             var mapped = _mapFunc(item);
             if (mapped is null)
+            {
+                yield return DataResult.Failure<TOutput>([new DataError("Mapping", "Mapping returned null", item)]);
                 continue;
+            }
 
             var result = await _validator.ValidateAsync(mapped, ct).ConfigureAwait(false);
             if (!result.IsValid)

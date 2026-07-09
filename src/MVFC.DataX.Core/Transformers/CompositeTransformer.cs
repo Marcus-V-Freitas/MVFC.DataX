@@ -1,40 +1,38 @@
-namespace MVFC.DataX.Core.Transformers;
+﻿namespace MVFC.DataX.Core.Transformers;
 
-public sealed class CompositeTransformer<TIn, TMid, TOut> : IDataTransformer<TIn, TOut>
+public sealed class CompositeTransformer<TIn, TMid, TOut>(IDataTransformer<TIn, TMid> first, IDataTransformer<TMid, TOut> second) : IDataTransformer<TIn, TOut>
 {
-    private readonly IDataTransformer<TIn, TMid> _first;
-    private readonly IDataTransformer<TMid, TOut> _second;
-
-    public CompositeTransformer(IDataTransformer<TIn, TMid> first, IDataTransformer<TMid, TOut> second)
-    {
-        _first = first ?? throw new ArgumentNullException(nameof(first));
-        _second = second ?? throw new ArgumentNullException(nameof(second));
-    }
+    private readonly IDataTransformer<TIn, TMid> _first = first ?? throw new ArgumentNullException(nameof(first));
+    private readonly IDataTransformer<TMid, TOut> _second = second ?? throw new ArgumentNullException(nameof(second));
 
     public async IAsyncEnumerable<DataResult<TOut>> TransformAsync(
         IAsyncEnumerable<TIn> input,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
         var firstPass = _first.TransformAsync(input, ct);
-        
-        var secondInput = ExtractSuccessfulValues(firstPass, ct);
-        
-        await foreach (var result in _second.TransformAsync(secondInput, ct).ConfigureAwait(false))
+
+        await foreach (var midResult in firstPass.WithCancellation(ct).ConfigureAwait(false))
         {
-            yield return result;
+            if (midResult.IsFailure)
+            {
+                yield return DataResult.Failure<TOut>(midResult.Errors);
+                continue;
+            }
+
+            if (midResult.Value is null)
+                continue;
+
+            await foreach (var outResult in _second.TransformAsync(SingleItemAsync(midResult.Value, ct), ct).ConfigureAwait(false))
+            {
+                yield return outResult;
+            }
         }
     }
 
-    private static async IAsyncEnumerable<TMid> ExtractSuccessfulValues(
-        IAsyncEnumerable<DataResult<TMid>> source,
-        [EnumeratorCancellation] CancellationToken ct)
+    private static async IAsyncEnumerable<T> SingleItemAsync<T>(
+        T item, [EnumeratorCancellation] CancellationToken ct)
     {
-        await foreach (var item in source.WithCancellation(ct).ConfigureAwait(false))
-        {
-            if (item.IsSuccess && item.Value is not null)
-            {
-                yield return item.Value;
-            }
-        }
+        ct.ThrowIfCancellationRequested();
+        yield return item;
     }
 }

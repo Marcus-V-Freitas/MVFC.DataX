@@ -117,4 +117,59 @@ public sealed class PubSubIntegrationTests : IAsyncLifetime
         // Assert
         await act.Should().ThrowAsync<OperationCanceledException>();
     }
+
+    [Fact]
+    public async Task ReadAsync_InvalidMessage_ShouldCatchAndNack()
+    {
+        // Arrange
+        var projectId = "test-project";
+        var topicId = "error-topic";
+        var subscriptionId = "error-subscription";
+        var emulatorEndpoint = _pubsub.GetEmulatorEndpoint();
+
+        var publisherService = await new PublisherServiceApiClientBuilder { Endpoint = emulatorEndpoint, ChannelCredentials = ChannelCredentials.Insecure }.BuildAsync(TestContext.Current.CancellationToken);
+        var subscriberService = await new SubscriberServiceApiClientBuilder { Endpoint = emulatorEndpoint, ChannelCredentials = ChannelCredentials.Insecure }.BuildAsync(TestContext.Current.CancellationToken);
+
+        var topicName = TopicName.FromProjectTopic(projectId, topicId);
+        var subscriptionName = SubscriptionName.FromProjectSubscription(projectId, subscriptionId);
+
+        await publisherService.CreateTopicAsync(topicName, TestContext.Current.CancellationToken);
+        await subscriberService.CreateSubscriptionAsync(subscriptionName, topicName, pushConfig: null, ackDeadlineSeconds: 10, TestContext.Current.CancellationToken);
+
+        var publisherClient = await new PublisherClientBuilder { TopicName = topicName, Endpoint = emulatorEndpoint, ChannelCredentials = ChannelCredentials.Insecure }.BuildAsync(TestContext.Current.CancellationToken);
+        var writer = new PubSubDataWriter<User>(
+            publisherClient,
+            u => new PubsubMessage { Data = Google.Protobuf.ByteString.CopyFromUtf8(System.Text.Json.JsonSerializer.Serialize(u)) });
+
+        await writer.WriteBatchAsync(
+        [
+            new User { Id = 1, Name = "Bad1" },
+            new User { Id = 2, Name = "Good" },
+            new User { Id = 3, Name = "Bad2" }
+        ], TestContext.Current.CancellationToken);
+
+        var subscriberClient = await new SubscriberClientBuilder { SubscriptionName = subscriptionName, Endpoint = emulatorEndpoint, ChannelCredentials = ChannelCredentials.Insecure }.BuildAsync(TestContext.Current.CancellationToken);
+        var reader = new PubSubDataReader<User>(
+            subscriberClient,
+            m =>
+            {
+                var u = System.Text.Json.JsonSerializer.Deserialize<User>(m.Data.ToStringUtf8())!;
+                if (u.Name!.StartsWith("Bad", StringComparison.OrdinalIgnoreCase))
+                    throw new Exception("Bad message");
+                return u;
+            });
+
+        // Act
+        var results = new List<User>();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        await foreach (var item in reader.ReadAsync(cts.Token))
+        {
+            results.Add(item);
+            if (results.Count == 1) break;
+        }
+
+        // Assert
+        results.Should().HaveCount(1);
+        results[0].Name.Should().Be("Good");
+    }
 }

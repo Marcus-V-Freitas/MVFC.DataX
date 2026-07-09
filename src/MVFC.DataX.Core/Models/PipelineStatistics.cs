@@ -6,4 +6,9 @@ public sealed record PipelineStatistics(
     long Failed,
     long Skipped,
     TimeSpan Elapsed,
-    IReadOnlyList<DataError> Errors);
+    IReadOnlyList<DataError> Errors)
+{
+    public double Throughput => Elapsed.TotalSeconds > 0 ? TotalRead / Elapsed.TotalSeconds : 0;
+    public double SuccessRate => TotalRead > 0 ? (double)Succeeded / TotalRead * 100 : 0;
+    public double FailureRate => TotalRead > 0 ? (double)Failed / TotalRead * 100 : 0;
+}

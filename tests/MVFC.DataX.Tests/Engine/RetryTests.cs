@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Tests.Engine;
+﻿namespace MVFC.DataX.Tests.Engine;
 
 public sealed class RetryTests
 {
@@ -18,7 +18,7 @@ public sealed class RetryTests
 
         var engine = new PipelineEngine<int, int>(
             reader, transformer, writer,
-            maxRetries: 3, retryDelay: TimeSpan.FromMilliseconds(1));
+            options: new PipelineOptions { MaxRetries = 3, RetryDelay = TimeSpan.FromMilliseconds(1) });
 
         // Act
         var stats = await engine.RunAsync(TestContext.Current.CancellationToken);
@@ -48,7 +48,7 @@ public sealed class RetryTests
 
         var engine = new PipelineEngine<int, int>(
             reader, transformer, writer,
-            maxRetries: 2, retryDelay: TimeSpan.Zero);
+            options: new PipelineOptions { MaxRetries = 2, RetryDelay = TimeSpan.Zero });
 
         // Act
         Func<Task> act = () => engine.RunAsync(TestContext.Current.CancellationToken);

@@ -30,6 +30,7 @@ public sealed class FlatMapTransformer<TIn, TOut>(Func<TIn, IEnumerable<TOut>?> 
 
             if (mapped is null)
             {
+                yield return DataResult.Failure<TOut>([new DataError("Mapping", "Mapping returned null", item)]);
                 continue;
             }
 

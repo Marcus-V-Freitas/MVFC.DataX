@@ -1,5 +1,12 @@
 namespace MVFC.DataX.Core.Transformers;
 
+/// <summary>
+/// Ordena os itens em memória.
+/// </summary>
+/// <remarks>
+/// IMPORTANTE: Este transformer acumula todos os itens lidos na memória antes de ordenar e prosseguir. 
+/// Deve ser utilizado com precaução em pipelines que lidam com grandes volumes de dados para evitar estouro de memória (OOM).
+/// </remarks>
 public sealed class OrderByTransformer<T, TKey>(Func<T, TKey> keySelector, bool descending = false, IComparer<TKey>? comparer = null) : IDataTransformer<T, T>
 {
     private readonly Func<T, TKey> _keySelector = keySelector ?? throw new ArgumentNullException(nameof(keySelector));

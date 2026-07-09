@@ -4,39 +4,31 @@ public sealed class PipelineEngine<TInput, TOutput>(
     IDataReader<TInput> reader,
     IDataTransformer<TInput, TOutput> transformer,
     IDataWriter<TOutput> writer,
+    PipelineOptions options,
     IDataWriter<DataResult<TOutput>>? deadLetterWriter = null,
-    int parallelism = 1,
-    int batchSize = 100,
-    int channelCapacity = 1000,
-    int maxRetries = 0,
-    TimeSpan retryDelay = default,
-    Func<PipelineStatistics, Task>? onCompleted = null)
+    Func<PipelineStatistics, Task>? onCompleted = null) : IAsyncDisposable
 {
     private readonly IDataReader<TInput> _reader = reader;
     private readonly IDataTransformer<TInput, TOutput> _transformer = transformer;
     private readonly IDataWriter<TOutput> _writer = writer;
+    private readonly PipelineOptions _options = options ?? throw new ArgumentNullException(nameof(options));
     private readonly IDataWriter<DataResult<TOutput>>? _deadLetterWriter = deadLetterWriter;
-    private readonly int _parallelism = parallelism > 0 ? parallelism : 1;
-    private readonly int _batchSize = batchSize > 0 ? batchSize : 100;
-    private readonly int _channelCapacity = channelCapacity > 0 ? channelCapacity : 1000;
-    private readonly int _maxRetries = maxRetries >= 0 ? maxRetries : 0;
-    private readonly TimeSpan _retryDelay = retryDelay < TimeSpan.Zero ? TimeSpan.Zero : retryDelay;
     private readonly Func<PipelineStatistics, Task>? _onCompleted = onCompleted;
 
     public async Task<PipelineStatistics> RunAsync(CancellationToken ct = default)
     {
         var sw = Stopwatch.StartNew();
         long totalRead = 0;
-        var errors = new List<DataError>();
+        var errors = new ConcurrentQueue<DataError>();
 
-        var options = new BoundedChannelOptions(_channelCapacity)
+        var channelOptions = new BoundedChannelOptions(_options.ChannelCapacity > 0 ? _options.ChannelCapacity : 1000)
         {
             FullMode = BoundedChannelFullMode.Wait,
             SingleWriter = true,
             SingleReader = false
         };
 
-        var inputChannel = Channel.CreateBounded<TInput>(options);
+        var inputChannel = Channel.CreateBounded<TInput>(channelOptions);
 
         var readTask = Task.Run(async () =>
         {
@@ -54,22 +46,28 @@ public sealed class PipelineEngine<TInput, TOutput>(
             }
         }, ct);
 
-        var processTasks = new List<Task<(long Succeeded, long Failed)>>();
-        for (var i = 0; i < _parallelism; i++)
+        var processTasks = new List<Task<(long Succeeded, long Failed, long Skipped)>>();
+        for (var i = 0; i < (_options.Parallelism > 0 ? _options.Parallelism : 1); i++)
         {
             processTasks.Add(Task.Run(() => ProcessWorkerAsync(inputChannel.Reader, errors, ct), ct));
         }
 
-        var results = await Task.WhenAll(processTasks).ConfigureAwait(false);
         await readTask.ConfigureAwait(false);
 
-        var totalSucceeded = results.Sum(r => r.Succeeded);
-        var totalFailed = results.Sum(r => r.Failed);
-        var skipped = totalRead - totalSucceeded - totalFailed;
+        long totalSucceeded = 0;
+        long totalFailed = 0;
+        long totalSkipped = 0;
+
+        foreach (var task in processTasks)
+        {
+            var (succeeded, failed, skipped) = await task.ConfigureAwait(false);
+            totalSucceeded += succeeded;
+            totalFailed += failed;
+            totalSkipped += skipped;
+        }
 
         sw.Stop();
-
-        var stats = new PipelineStatistics(totalRead, totalSucceeded, totalFailed, skipped, sw.Elapsed, errors);
+        var stats = new PipelineStatistics(totalRead, totalSucceeded, totalFailed, totalSkipped, sw.Elapsed, errors.ToArray());
 
         if (_onCompleted != null)
         {
@@ -79,39 +77,37 @@ public sealed class PipelineEngine<TInput, TOutput>(
         return stats;
     }
 
-    private async Task<(long Succeeded, long Failed)> ProcessWorkerAsync(ChannelReader<TInput> reader, List<DataError> errors, CancellationToken ct)
+    private async Task<(long Succeeded, long Failed, long Skipped)> ProcessWorkerAsync(ChannelReader<TInput> reader, ConcurrentQueue<DataError> errors, CancellationToken ct)
     {
         long localSucceeded = 0;
         long localFailed = 0;
+        long localSkipped = 0;
         var inputEnumerable = reader.ReadAllAsync(ct);
         var transformedStream = _transformer.TransformAsync(inputEnumerable, ct);
 
-        var batch = new List<TOutput>(_batchSize);
+        var batchSize = _options.BatchSize > 0 ? _options.BatchSize : 100;
+        var batch = new List<TOutput>(batchSize);
 
         await foreach (var result in transformedStream.ConfigureAwait(false))
         {
             if (result.IsSuccess && result.Value is not null)
             {
                 batch.Add(result.Value);
-                if (batch.Count >= _batchSize)
+                if (batch.Count >= batchSize)
                 {
                     await WriteBatchWithRetryAsync(batch, ct).ConfigureAwait(false);
                     localSucceeded += batch.Count;
-                    batch = new List<TOutput>(_batchSize);
+                    batch = new List<TOutput>(batchSize);
                 }
+            }
+            else if (result.IsSkipped)
+            {
+                localSkipped++;
             }
             else
             {
                 localFailed++;
-                lock (errors)
-                {
-                    errors.AddRange(result.Errors);
-                }
-
-                if (_deadLetterWriter != null)
-                {
-                    await _deadLetterWriter.WriteAsync(result, ct).ConfigureAwait(false);
-                }
+                await HandleFailureAsync(result, errors, ct).ConfigureAwait(false);
             }
         }
 
@@ -121,7 +117,20 @@ public sealed class PipelineEngine<TInput, TOutput>(
             localSucceeded += batch.Count;
         }
 
-        return (localSucceeded, localFailed);
+        return (localSucceeded, localFailed, localSkipped);
+    }
+
+    private async Task HandleFailureAsync(DataResult<TOutput> result, ConcurrentQueue<DataError> errors, CancellationToken ct)
+    {
+        foreach (var e in result.Errors)
+        {
+            errors.Enqueue(e);
+        }
+
+        if (_deadLetterWriter != null)
+        {
+            await _deadLetterWriter.WriteAsync(result, ct).ConfigureAwait(false);
+        }
     }
 
     private async Task WriteBatchWithRetryAsync(IReadOnlyList<TOutput> batch, CancellationToken ct)
@@ -134,14 +143,39 @@ public sealed class PipelineEngine<TInput, TOutput>(
                 await _writer.WriteBatchAsync(batch, ct).ConfigureAwait(false);
                 return;
             }
-            catch (Exception) when (retries < _maxRetries)
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex) when (retries < _options.MaxRetries && (_options.RetryPredicate == null || _options.RetryPredicate(ex)))
             {
                 retries++;
-                if (_retryDelay > TimeSpan.Zero)
+                if (_options.RetryDelay > TimeSpan.Zero)
                 {
-                    await Task.Delay(_retryDelay, ct).ConfigureAwait(false);
+                    var delay = _options.RetryDelay;
+                    if (_options.UseJitter)
+                    {
+                        var jitter = TimeSpan.FromMilliseconds(Random.Shared.Next(0, 100));
+                        delay += jitter;
+                    }
+                    await Task.Delay(delay, ct).ConfigureAwait(false);
                 }
             }
         }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_reader is IAsyncDisposable readerAsyncDisp) await readerAsyncDisp.DisposeAsync().ConfigureAwait(false);
+        else if (_reader is IDisposable readerDisp) readerDisp.Dispose();
+
+        if (_transformer is IAsyncDisposable transformerAsyncDisp) await transformerAsyncDisp.DisposeAsync().ConfigureAwait(false);
+        else if (_transformer is IDisposable transformerDisp) transformerDisp.Dispose();
+
+        if (_writer is IAsyncDisposable writerAsyncDisp) await writerAsyncDisp.DisposeAsync().ConfigureAwait(false);
+        else if (_writer is IDisposable writerDisp) writerDisp.Dispose();
+
+        if (_deadLetterWriter is IAsyncDisposable dlqAsyncDisp) await dlqAsyncDisp.DisposeAsync().ConfigureAwait(false);
+        else if (_deadLetterWriter is IDisposable dlqDisp) dlqDisp.Dispose();
     }
 }

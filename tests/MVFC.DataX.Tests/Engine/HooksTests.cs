@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Tests.Engine;
+﻿namespace MVFC.DataX.Tests.Engine;
 
 public sealed class HooksTests
 {
@@ -14,6 +14,7 @@ public sealed class HooksTests
 
         var engine = new PipelineEngine<int, string>(
             reader, transformer, writer,
+            new PipelineOptions(),
             onCompleted: stats =>
             {
                 finalStats = stats;
@@ -27,7 +28,7 @@ public sealed class HooksTests
         finalStats.Should().NotBeNull();
         finalStats!.TotalRead.Should().Be(4);
         finalStats.Succeeded.Should().Be(2);
-        finalStats.Failed.Should().Be(0);
-        finalStats.Skipped.Should().Be(2);
+        finalStats.Failed.Should().Be(2);
+        finalStats.Skipped.Should().Be(0);
     }
 }

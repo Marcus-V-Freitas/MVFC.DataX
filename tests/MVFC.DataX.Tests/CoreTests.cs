@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Tests;
+﻿namespace MVFC.DataX.Tests;
 
 public sealed class CoreTests
 {
@@ -44,7 +44,7 @@ public sealed class CoreTests
 
         var writer = Substitute.For<IDataWriter<string>>();
 
-        var engine = new PipelineEngine<int, string>(reader, transformer, writer, parallelism: 1, batchSize: 2);
+        var engine = new PipelineEngine<int, string>(reader, transformer, writer, new PipelineOptions { Parallelism = 1, BatchSize = 2 });
 
         // Act
         var stats = await engine.RunAsync(TestContext.Current.CancellationToken);
@@ -70,7 +70,7 @@ public sealed class CoreTests
         var writer = Substitute.For<IDataWriter<string>>();
         var dlqWriter = Substitute.For<IDataWriter<DataResult<string>>>();
 
-        var engine = new PipelineEngine<int, string>(reader, transformer, writer, deadLetterWriter: dlqWriter);
+        var engine = new PipelineEngine<int, string>(reader, transformer, writer, new PipelineOptions(), deadLetterWriter: dlqWriter);
 
         // Act
         var stats = await engine.RunAsync(TestContext.Current.CancellationToken);

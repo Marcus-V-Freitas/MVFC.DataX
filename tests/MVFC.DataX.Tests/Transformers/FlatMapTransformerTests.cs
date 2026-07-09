@@ -1,4 +1,4 @@
-﻿namespace MVFC.DataX.Tests.Transformers;
+namespace MVFC.DataX.Tests.Transformers;
 
 public sealed class FlatMapTransformerTests
 {
@@ -24,7 +24,7 @@ public sealed class FlatMapTransformerTests
     }
 
     [Fact]
-    public async Task FlatMapTransformer_Ignora_Nulos()
+    public async Task FlatMapTransformer_Retorna_Falha_Para_Nulos()
     {
         // Arrange
         var input = CreateAsyncEnumerable<int[]?>(
@@ -42,7 +42,10 @@ public sealed class FlatMapTransformerTests
         }
 
         // Assert
-        results.Select(r => r.Value).Should().BeEquivalentTo([1, 2], options => options.WithStrictOrdering());
+        results.Should().HaveCount(3);
+        results.Count(r => r.IsSuccess).Should().Be(2);
+        results.Count(r => r.IsFailure).Should().Be(1);
+        results.Where(r => r.IsSuccess).Select(r => r.Value).Should().BeEquivalentTo([1, 2], options => options.WithStrictOrdering());
     }
 
     [Fact]

@@ -1,9 +1,26 @@
-namespace MVFC.DataX.Pipeline;
+﻿namespace MVFC.DataX.Pipeline;
 
 public static class PipelineBuilder
 {
     public static PipelineBuilder<TInput> ReadFrom<TInput>(IDataReader<TInput> reader)
         => new(reader);
+
+    public static PipelineBuilder<TInput> ReadFrom<TInput>(IEnumerable<TInput> source)
+        => new(new EnumerableReader<TInput>(source));
+
+    public static PipelineBuilder<TInput> ReadFrom<TInput>(IAsyncEnumerable<TInput> source)
+        => new(new EnumerableReader<TInput>(source));
+
+    public static PipelineBuilder<TInput> ReadFrom<TInput>(params IDataReader<TInput>[] readers)
+    {
+        if (readers == null || readers.Length == 0)
+            throw new ArgumentException("At least one reader must be provided.", nameof(readers));
+
+        if (readers.Length == 1)
+            return new(readers[0]);
+
+        return new(new MergeReader<TInput>(readers));
+    }
 }
 
 public sealed class PipelineBuilder<TInput>
@@ -95,6 +112,15 @@ public sealed class PipelineBuilder<TInput, TOutput>
         return this;
     }
 
+    public PipelineBuilder<TInput, TOutput> ReplaceWriter(Func<IDataWriter<TOutput>, IDataWriter<TOutput>> replaceFunc)
+    {
+        if (_writer != null)
+        {
+            _writer = replaceFunc(_writer);
+        }
+        return this;
+    }
+
     public PipelineBuilder<TInput, TOutput> WithParallelism(int degree)
     {
         _options = _options with { Parallelism = degree };
@@ -140,12 +166,8 @@ public sealed class PipelineBuilder<TInput, TOutput>
             _reader,
             _transformer,
             _writer,
+            _options,
             _deadLetterWriter,
-            _options.Parallelism,
-            _options.BatchSize,
-            _options.ChannelCapacity,
-            _options.MaxRetries,
-            _options.RetryDelay,
             _onCompleted);
 
         return new DataPipeline<TInput, TOutput>(engine);

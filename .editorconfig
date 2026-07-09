@@ -427,6 +427,9 @@ dotnet_diagnostic.CA1707.severity = none
 # Async methods should have Async suffix
 dotnet_diagnostic.CA1715.severity = suggestion
 
+# Should not throw non generic exception
+dotnet_diagnostic.CA2201.severity = none
+
 # ──────────────────────────────────────────────────────────
 # 13. SONARANALYZER — principais
 # ──────────────────────────────────────────────────────────

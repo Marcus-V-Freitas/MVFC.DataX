@@ -22,6 +22,19 @@ Building data pipelines and ETL processes in .NET often means:
 
 ## Architecture
 
+```mermaid
+graph LR
+    R["IDataReader&lt;T&gt;"] --> CH["Channel&lt;T&gt;"]
+    CH --> W1["Worker 1"]
+    CH --> W2["Worker N"]
+    W1 --> TR["IDataTransformer&lt;TIn,TOut&gt;"]
+    W2 --> TR
+    TR --> B["Batch Buffer"]
+    B --> WR["IDataWriter&lt;T&gt;"]
+    TR -->|"Failure"| DLQ["Dead Letter Writer"]
+    WR -->|"retry"| WR
+```
+
 All packages follow the same pattern based on the Core abstractions:
 
 - `IDataReader<T>` — contract for reading data as an `IAsyncEnumerable<T>`.
@@ -47,6 +60,7 @@ Once you understand how to use one provider, all others work identically within 
 | [MVFC.DataX.Providers.SQS](src/MVFC.DataX.Providers.SQS/README.md) | Amazon SQS | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SQS) |
 | [MVFC.DataX.Providers.SqlServer](src/MVFC.DataX.Providers.SqlServer/README.md) | SQL Server | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SqlServer) |
 | [MVFC.DataX.Readers.Http](src/MVFC.DataX.Readers.Http/README.md) | HTTP APIs | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Readers.Http) |
+| [MVFC.DataX.Resilience](src/MVFC.DataX.Resilience/README.md) | Polly v8 Integration | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Resilience) |
 | [MVFC.DataX.Validation](src/MVFC.DataX.Validation/README.md) | Data Validation | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Validation) |
 
 ***

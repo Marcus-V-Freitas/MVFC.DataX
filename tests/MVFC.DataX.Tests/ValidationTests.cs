@@ -46,7 +46,7 @@ public sealed class ValidationTests
     }
 
     [Fact]
-    public async Task FluentTransformer_Deve_filtrar_banco_sem_ispb()
+    public async Task FluentTransformer_Deve_retornar_falha_para_banco_sem_ispb()
     {
         // Arrange
         var transformer = new FluentTransformer<Bank, BankInfo>(TestHelpers.MapBank, _validator);
@@ -56,7 +56,8 @@ public sealed class ValidationTests
         var results = await transformer.TransformAsync(input, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
 
         // Assert
-        results.Should().BeEmpty();
+        results.Should().ContainSingle().Which.IsFailure.Should().BeTrue();
+        results[0].Errors.Should().ContainSingle().Which.ErrorMessage.Should().Be("Mapping returned null");
     }
 
     [Fact]

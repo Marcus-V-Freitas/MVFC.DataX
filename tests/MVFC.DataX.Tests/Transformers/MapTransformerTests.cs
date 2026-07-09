@@ -19,7 +19,7 @@ public sealed class MapTransformerTests
     }
 
     [Fact]
-    public async Task MapTransformer_Deve_pular_itens_nulos()
+    public async Task MapTransformer_Deve_retornar_falha_para_itens_nulos()
     {
         // Arrange
         var transformer = new MapTransformer<int, string>(i => i % 2 == 0 ? i.ToString(CultureInfo.InvariantCulture) : null);
@@ -29,8 +29,10 @@ public sealed class MapTransformerTests
         var results = await transformer.TransformAsync(input, TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
         
         // Assert
-        results.Should().HaveCount(2);
-        results.Select(r => r.Value).Should().BeEquivalentTo("2", "4");
+        results.Should().HaveCount(4);
+        results.Count(r => r.IsSuccess).Should().Be(2);
+        results.Count(r => r.IsFailure).Should().Be(2);
+        results.Where(r => r.IsSuccess).Select(r => r.Value).Should().BeEquivalentTo("2", "4");
     }
 
     [Fact]

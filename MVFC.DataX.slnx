@@ -12,6 +12,7 @@
     <Project Path="src/MVFC.DataX.Readers.Http/MVFC.DataX.Readers.Http.csproj" />
     <Project Path="src/MVFC.DataX.Validation/MVFC.DataX.Validation.csproj" />
     <Project Path="src/MVFC.DataX.Providers.MongoDB/MVFC.DataX.Providers.MongoDB.csproj" />
+    <Project Path="src/MVFC.DataX.Resilience/MVFC.DataX.Resilience.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MVFC.DataX.Tests/MVFC.DataX.Tests.csproj" />

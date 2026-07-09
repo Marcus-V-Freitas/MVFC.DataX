@@ -81,4 +81,52 @@ public sealed class SqsIntegrationTests : IAsyncLifetime
         // Assert
         await act.Should().ThrowAsync<OperationCanceledException>();
     }
+
+    [Fact]
+    public async Task ReadAsync_InvalidMessage_ShouldCatchAndContinue()
+    {
+        // Arrange
+        var sqsConfig = new AmazonSQSConfig { ServiceURL = _localStack.GetConnectionString() };
+        var sqsClient = new AmazonSQSClient("test", "test", sqsConfig);
+
+        var createQueueResponse = await sqsClient.CreateQueueAsync(new CreateQueueRequest { QueueName = "error-queue" }, TestContext.Current.CancellationToken);
+        var queueUrl = createQueueResponse.QueueUrl;
+
+        var writer = new SqsDataWriter<User>(
+            sqsClient,
+            queueUrl,
+            u => new SendMessageRequest { MessageBody = System.Text.Json.JsonSerializer.Serialize(u) });
+
+        await writer.WriteBatchAsync(
+        [
+            new User { Id = 1, Name = "Bad1" },
+            new User { Id = 2, Name = "Good" },
+            new User { Id = 3, Name = "Bad2" }
+        ], TestContext.Current.CancellationToken);
+
+        var reader = new SqsDataReader<User>(
+            sqsClient,
+            queueUrl,
+            m =>
+            {
+                var u = JsonSerializer.Deserialize<User>(m.Body)!;
+                if (u.Name!.StartsWith("Bad", StringComparison.OrdinalIgnoreCase))
+                    throw new Exception("Bad message");
+                return u;
+            },
+            waitTimeSeconds: 1);
+
+        // Act
+        var results = new List<User>();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        await foreach (var item in reader.ReadAsync(cts.Token))
+        {
+            results.Add(item);
+            if (results.Count == 1) break;
+        }
+
+        // Assert
+        results.Should().HaveCount(1);
+        results[0].Name.Should().Be("Good");
+    }
 }

@@ -75,4 +75,60 @@ public sealed class SqlServerIntegrationTests : IAsyncLifetime
         // Assert
         await act.Should().ThrowAsync<Exception>();
     }
+
+    [Fact]
+    public async Task ReadAsync_EmptyTable_E_ConfigureCommand_ShouldSucceed()
+    {
+        // Arrange
+        var connectionString = _mssql.GetConnectionString();
+        await using var connection = new SqlConnection(connectionString);
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+
+        await using var cmd = new SqlCommand("CREATE TABLE empty_users (id INT, name VARCHAR(100))", connection);
+        await cmd.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
+
+        var reader = new SqlServerDataReader<User>(
+            connectionString,
+            "SELECT id, name FROM empty_users",
+            r => new User(),
+            c => c.CommandTimeout = 30); // configureCommand preenchido
+
+        // Act
+        var results = await reader.ReadAsync(TestContext.Current.CancellationToken).ToListAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task ReadAsync_MapperLancaExcecao_DevePropagarELiberarRecursos()
+    {
+        // Arrange
+        var connectionString = _mssql.GetConnectionString();
+        await using var connection = new SqlConnection(connectionString);
+        await connection.OpenAsync(TestContext.Current.CancellationToken);
+
+        await using var cmd = new SqlCommand("CREATE TABLE fail_users (id INT, name VARCHAR(100))", connection);
+        await cmd.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
+
+        await using var insert = new SqlCommand("INSERT INTO fail_users VALUES (1, 'Alice')", connection);
+        await insert.ExecuteNonQueryAsync(TestContext.Current.CancellationToken);
+
+        var reader = new SqlServerDataReader<User>(
+            connectionString,
+            "SELECT id, name FROM fail_users",
+            r => throw new InvalidOperationException("Erro no mapper"));
+
+        // Act
+        var act = async () =>
+        {
+            await foreach (var item in reader.ReadAsync(TestContext.Current.CancellationToken))
+            {
+                // do nothing
+            }
+        };
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidOperationException>();
+    }
 }
