@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2026-08-27
+
+### Added
+
+- Added `global.json` configuring `Microsoft.Testing.Platform` as the test runner.
+
 ## [1.2.1] - 2026-08-27
 
 ### Fixed
@@ -75,6 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Standardized all `.csproj` files with NuGet metadata, `TargetFrameworks` (.NET 9/10), tags, and repository information.
 - Created comprehensive `README.md` and `README.pt-br.md` files for the repository root and all 12 individual projects, featuring complete API signatures and real-world C# examples.
 
+[1.2.2]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.0.0...v1.1.0
