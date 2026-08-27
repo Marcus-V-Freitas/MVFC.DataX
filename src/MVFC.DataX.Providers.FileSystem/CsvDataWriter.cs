@@ -19,7 +19,10 @@ public sealed class CsvDataWriter<T>(
         try
         {
             await EnsureInitializedAsync().ConfigureAwait(false);
-            _csv!.WriteRecord(item);
+
+            ArgumentNullException.ThrowIfNull(_csv);
+
+            _csv.WriteRecord(item);
             await _csv.NextRecordAsync().ConfigureAwait(false);
         }
         finally
@@ -39,7 +42,10 @@ public sealed class CsvDataWriter<T>(
         try
         {
             await EnsureInitializedAsync().ConfigureAwait(false);
-            await _csv!.WriteRecordsAsync(items, ct).ConfigureAwait(false);
+
+            ArgumentNullException.ThrowIfNull(_csv);
+
+            await _csv.WriteRecordsAsync(items, ct).ConfigureAwait(false);
         }
         finally
         {
@@ -49,7 +55,8 @@ public sealed class CsvDataWriter<T>(
 
     private async Task EnsureInitializedAsync()
     {
-        if (_initialized) return;
+        if (_initialized)
+            return;
 
         var fileExists = File.Exists(_filePath);
         _streamWriter = new StreamWriter(_filePath, append);
@@ -66,8 +73,12 @@ public sealed class CsvDataWriter<T>(
 
     public async ValueTask DisposeAsync()
     {
-        if (_csv != null) await _csv.DisposeAsync().ConfigureAwait(false);
-        if (_streamWriter != null) await _streamWriter.DisposeAsync().ConfigureAwait(false);
+        if (_csv != null)
+            await _csv.DisposeAsync().ConfigureAwait(false);
+
+        if (_streamWriter != null)
+            await _streamWriter.DisposeAsync().ConfigureAwait(false);
+
         _semaphore.Dispose();
     }
 }

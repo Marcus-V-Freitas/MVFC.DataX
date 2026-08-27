@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Providers.PubSub;
+﻿namespace MVFC.DataX.Providers.PubSub;
 
 public sealed class PubSubDataReader<T>(
     SubscriberClient subscriberClient,
@@ -34,7 +34,7 @@ public sealed class PubSubDataReader<T>(
         }
         finally
         {
-            await _subscriberClient.StopAsync(ct).ConfigureAwait(false);
+            await _subscriberClient.StopAsync(new ShutdownOptions { Mode = ShutdownMode.WaitForProcessing }, ct).ConfigureAwait(false);
         }
     }
 }

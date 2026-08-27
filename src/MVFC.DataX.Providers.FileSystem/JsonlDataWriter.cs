@@ -19,8 +19,11 @@ public sealed class JsonlDataWriter<T>(
         try
         {
             await EnsureInitializedAsync().ConfigureAwait(false);
+
+            ArgumentNullException.ThrowIfNull(_streamWriter);
+
             var json = JsonSerializer.Serialize(item, _options);
-            await _streamWriter!.WriteLineAsync(json.AsMemory(), ct).ConfigureAwait(false);
+            await _streamWriter.WriteLineAsync(json.AsMemory(), ct).ConfigureAwait(false);
         }
         finally
         {
@@ -39,11 +42,14 @@ public sealed class JsonlDataWriter<T>(
         try
         {
             await EnsureInitializedAsync().ConfigureAwait(false);
+
+            ArgumentNullException.ThrowIfNull(_streamWriter);
+
             foreach (var item in items)
             {
                 ct.ThrowIfCancellationRequested();
                 var json = JsonSerializer.Serialize(item, _options);
-                await _streamWriter!.WriteLineAsync(json.AsMemory(), ct).ConfigureAwait(false);
+                await _streamWriter.WriteLineAsync(json.AsMemory(), ct).ConfigureAwait(false);
             }
         }
         finally
@@ -64,7 +70,9 @@ public sealed class JsonlDataWriter<T>(
 
     public async ValueTask DisposeAsync()
     {
-        if (_streamWriter != null) await _streamWriter.DisposeAsync().ConfigureAwait(false);
+        if (_streamWriter != null)
+            await _streamWriter.DisposeAsync().ConfigureAwait(false);
+
         _semaphore.Dispose();
     }
 }

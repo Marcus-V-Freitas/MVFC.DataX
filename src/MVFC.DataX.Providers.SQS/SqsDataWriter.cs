@@ -49,7 +49,7 @@ public sealed class SqsDataWriter<T>(
 
             var response = await _sqsClient.SendMessageBatchAsync(request, ct).ConfigureAwait(false);
 
-            if (response.Failed.Count > 0)
+            if (response.Failed?.Count > 0)
             {
                 throw new InvalidOperationException($"Failed to write {response.Failed.Count} items to SQS");
             }

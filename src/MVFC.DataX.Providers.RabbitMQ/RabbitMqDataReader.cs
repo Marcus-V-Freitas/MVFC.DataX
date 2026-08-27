@@ -46,7 +46,7 @@ public sealed class RabbitMqDataReader<T>(
         }
         finally
         {
-            await _channel.BasicCancelAsync(consumerTag, cancellationToken: default).ConfigureAwait(false);
+            await _channel.BasicCancelAsync(consumerTag, cancellationToken: ct).ConfigureAwait(false);
         }
     }
 
