@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Validation.svg)](https://www.nuget.org/packages/MVFC.DataX.Validation)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Validation.svg)](https://www.nuget.org/packages/MVFC.DataX.Validation)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,8 +21,8 @@ dotnet add package MVFC.DataX.Validation
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
+| Class                                | Description                                                                                                                                                                                                                                                                 |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `FluentTransformer<TInput, TOutput>` | An `IDataTransformer` that maps an input item to an output item, then executes a FluentValidation `IValidator<TOutput>`. Failures automatically translate into `DataResult.Failure` with specific `DataError` items populated via the framework's detailed property errors. |
 
 ## API Signatures

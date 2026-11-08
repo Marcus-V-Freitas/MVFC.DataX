@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Validation.svg)](https://www.nuget.org/packages/MVFC.DataX.Validation)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Validation.svg)](https://www.nuget.org/packages/MVFC.DataX.Validation)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,8 +21,8 @@ dotnet add package MVFC.DataX.Validation
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
+| Classe                               | Descrição                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `FluentTransformer<TInput, TOutput>` | Implementa um `IDataTransformer` atuando simultaneamente em conversão (mapping) de dados e validações regras do `IValidator<TOutput>`. Validações rejeitadas são automaticamente convertidas para o fluxo nulo de `DataResult.Failure` repassando todos os erros de propriedades internas para a Engine de forma legível. |
 
 ## Assinaturas da API

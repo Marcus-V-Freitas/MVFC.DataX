@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Readers.Http.svg)](https://www.nuget.org/packages/MVFC.DataX.Readers.Http)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Readers.Http.svg)](https://www.nuget.org/packages/MVFC.DataX.Readers.Http)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,8 +21,8 @@ dotnet add package MVFC.DataX.Readers.Http
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
+| Classe             | Descrição                                                                                                                                    |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | `HttpApiReader<T>` | Aceita um delegate injetável para permitir uso facilitado do `HttpClient`, independentemente do método de autenticação da aplicação cliente. |
 
 ## Assinaturas da API

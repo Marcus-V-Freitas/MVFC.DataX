@@ -23,11 +23,11 @@ public sealed class RabbitMqDataWriter<T>(
         var body = _serializer(item);
         var properties = new BasicProperties();
 
-        await _channel.BasicPublishAsync(_exchange, _routingKey, false, properties, body, ct).ConfigureAwait(false);
+        await _channel.BasicPublishAsync(_exchange, _routingKey, mandatory: false, properties, body, ct).ConfigureAwait(false);
     }
 
     public async Task WriteBatchAsync(IReadOnlyList<T> items, CancellationToken ct = default)
-    {        
+    {
         ArgumentNullException.ThrowIfNull(items);
 
         if (items.Count == 0)
@@ -41,7 +41,7 @@ public sealed class RabbitMqDataWriter<T>(
         {
             var body = _serializer(item);
             var properties = new BasicProperties();
-            await _channel.BasicPublishAsync(_exchange, _routingKey, false, properties, body, ct).ConfigureAwait(false);
+            await _channel.BasicPublishAsync(_exchange, _routingKey, mandatory: false, properties, body, ct).ConfigureAwait(false);
         }
     }
 

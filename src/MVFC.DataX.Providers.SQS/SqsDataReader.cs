@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Providers.SQS;
+﻿namespace MVFC.DataX.Providers.SQS;
 
 public sealed class SqsDataReader<T>(
     IAmazonSQS sqsClient,
@@ -21,7 +21,7 @@ public sealed class SqsDataReader<T>(
             {
                 QueueUrl = _queueUrl,
                 MaxNumberOfMessages = _maxMessages,
-                WaitTimeSeconds = _waitTimeSeconds
+                WaitTimeSeconds = _waitTimeSeconds,
             };
 
             var response = await _sqsClient.ReceiveMessageAsync(request, ct).ConfigureAwait(false);

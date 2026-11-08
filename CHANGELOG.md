@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-11-07
+
+### Added
+
+- Added `ResilientDataWriter<T>` with `IAsyncDisposable` / `IDisposable` lifecycle support for disposing underlying writers.
+- Separated `DeadLetterWriter`, `IgnoreWriter`, and `LogAndDiscardWriter` into individual dedicated files in `MVFC.DataX.Pipeline`.
+- Added CsvHelper 34 source generator record mappings (`ProductMap`, `ProductResultMap`, `UserMap`) in the test suite.
+- Added .NET SDK `10.0.100` (`rollForward: latestFeature`) configuration to `global.json`.
+- Added `dotnet-reportgenerator-globaltool` (v5.3.11) and `dotnet-coverage` (v18.12.0) local tools in `.config/dotnet-tools.json`.
+- Enabled central transitive package pinning (`CentralPackageTransitivePinningEnabled`) in `Directory.Packages.props`.
+- Added OIDC authentication via `NuGet/login@v1` and dual publishing to GitHub Packages in CI workflow.
+
+### Changed
+
+- Upgraded `CsvHelper` to `34.0.0`: migrated `CsvDataReader` and `CsvDataWriter` from `CsvConfiguration` to `CsvReaderOptions` / `CsvWriterOptions` using factory methods `CsvReader.Create` and `CsvWriter.Create`.
+- Updated `build.cake` to Cake 5.1.0 and changed execution to invoke restored local manifest tools (`dotnet tool run`).
+- Replaced `SonarAnalyzer.CSharp` with `MVFC.Pack.Analyzers` (4.0.2) in `Directory.Build.targets`.
+- Updated dependencies in `Directory.Packages.props` (`Microsoft.Extensions.Resilience` 10.11.0, `Microsoft.NET.Test.Sdk` 18.11.0, `Microsoft.Testing.Platform` 2.5.2, `Testcontainers` 4.16.0, `xunit.v3` 4.0.2, `Microsoft.Data.SqlClient` 7.1.1, `Google.Cloud.PubSub.V1` 3.39.0, `AWSSDK.SQS` 4.0.100.25, `MinVer` 8.0.0, `FluentValidation` 12.2.0, `MongoDB.Driver` 3.13.0, `coverlet.collector` 10.1.0).
+- Modernized CI workflow (`.github/workflows/ci.yml`) with concurrency controls, branch verification for release tags, combined .NET 9/10 setup, and sticky PR coverage comments.
+- Configured `.editorconfig` rules to ignore `MA0004` and `MA0015`.
+- Standardized markdown tables and CI/Codecov badge links across repository and package documentation.
+
+### Fixed
+
+- Propagated cancellation tokens via `WithCancellation(ct)` to `transformedStream` in `PipelineEngine`.
+- Added asynchronous record writing with `WriteRecordAsync` and propagated cancellation tokens in `CsvDataWriter`.
+- Added explicit null validation (`ArgumentNullException.ThrowIfNull`) in `ErrorHandling.DeadLetter` and `ErrorHandling.LogAndDiscard`.
+- Formatted `OrderByTransformer` exception messages with `CultureInfo.InvariantCulture`.
+
 ## [1.2.2] - 2026-08-27
 
 ### Added
@@ -81,6 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Standardized all `.csproj` files with NuGet metadata, `TargetFrameworks` (.NET 9/10), tags, and repository information.
 - Created comprehensive `README.md` and `README.pt-br.md` files for the repository root and all 12 individual projects, featuring complete API signatures and real-world C# examples.
 
+[1.3.0]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.2.2...v1.3.0
 [1.2.2]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/Marcus-V-Freitas/MVFC.DataX/compare/v1.1.0...v1.2.0

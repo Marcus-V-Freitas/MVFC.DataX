@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Core.Engine;
+﻿namespace MVFC.DataX.Core.Engine;
 
 public sealed class PipelineEngine<TInput, TOutput>(
     IDataReader<TInput> reader,
@@ -27,7 +27,7 @@ public sealed class PipelineEngine<TInput, TOutput>(
         {
             FullMode = BoundedChannelFullMode.Wait,
             SingleWriter = true,
-            SingleReader = false
+            SingleReader = false,
         };
 
         var inputChannel = Channel.CreateBounded<TInput>(channelOptions);
@@ -69,7 +69,7 @@ public sealed class PipelineEngine<TInput, TOutput>(
         }
 
         sw.Stop();
-        var stats = new PipelineStatistics(totalRead, totalSucceeded, totalFailed, totalSkipped, sw.Elapsed, errors.ToArray());
+        var stats = new PipelineStatistics(totalRead, totalSucceeded, totalFailed, totalSkipped, sw.Elapsed, [.. errors]);
 
         if (_onCompleted != null)
         {
@@ -96,7 +96,7 @@ public sealed class PipelineEngine<TInput, TOutput>(
 
         try
         {
-            await foreach (var result in transformedStream.ConfigureAwait(false))
+            await foreach (var result in transformedStream.WithCancellation(ct).ConfigureAwait(false))
             {
                 if (result.IsSuccess && result.Value is not null)
                 {
@@ -293,7 +293,7 @@ public sealed class PipelineEngine<TInput, TOutput>(
     {
         Success,
         Skipped,
-        Failed
+        Failed,
     }
 
     public async ValueTask DisposeAsync()

@@ -20,22 +20,22 @@ public sealed class RabbitMqDataReader<T>(
         var channel = Channel.CreateUnbounded<T>();
 
         var consumer = new AsyncEventingBasicConsumer(_channel);
-        consumer.ReceivedAsync += async (model, ea) =>
+        consumer.ReceivedAsync += async (_, ea) =>
         {
             try
             {
                 var body = ea.Body.ToArray();
                 var item = _deserializer(body);
                 await channel.Writer.WriteAsync(item, ct).ConfigureAwait(false);
-                await _channel.BasicAckAsync(ea.DeliveryTag, false, ct).ConfigureAwait(false);
+                await _channel.BasicAckAsync(ea.DeliveryTag, multiple: false, ct).ConfigureAwait(false);
             }
             catch
             {
-                await _channel.BasicNackAsync(ea.DeliveryTag, false, false, ct).ConfigureAwait(false);
+                await _channel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false, ct).ConfigureAwait(false);
             }
         };
 
-        var consumerTag = await _channel.BasicConsumeAsync(_queueName, false, consumer, ct).ConfigureAwait(false);
+        var consumerTag = await _channel.BasicConsumeAsync(_queueName, autoAck: false, consumer, ct).ConfigureAwait(false);
 
         try
         {

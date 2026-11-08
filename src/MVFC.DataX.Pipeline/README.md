@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Pipeline.svg)](https://www.nuget.org/packages/MVFC.DataX.Pipeline)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Pipeline.svg)](https://www.nuget.org/packages/MVFC.DataX.Pipeline)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,13 +21,13 @@ dotnet add package MVFC.DataX.Pipeline
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
-| `PipelineBuilder` (static) | Entry point to create a pipeline via `PipelineBuilder.ReadFrom<T>(reader)`. |
-| `PipelineBuilder<TInput>` | Fluent builder API supporting `.TransformWith()`, `.Skip()`, `.Take()`, `.Distinct()`, `.OrderBy()`, `.FlatMap()`, `.Aggregate()`, and `.Batch()`. |
+| Class                              | Description                                                                                                                                                                                         |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PipelineBuilder` (static)         | Entry point to create a pipeline via `PipelineBuilder.ReadFrom<T>(reader)`.                                                                                                                         |
+| `PipelineBuilder<TInput>`          | Fluent builder API supporting `.TransformWith()`, `.Skip()`, `.Take()`, `.Distinct()`, `.OrderBy()`, `.FlatMap()`, `.Aggregate()`, and `.Batch()`.                                                  |
 | `PipelineBuilder<TInput, TOutput>` | Advanced builder with `.WriteTo(writer)`, `.WithParallelism(int)`, `.WithBatchSize(int)`, `.WithRetry(int, TimeSpan)`, `.WithChannelCapacity(int)`, `.OnError(writer)`, and `.OnCompleted(Action)`. |
-| `DataPipeline<TInput, TOutput>` | The built orchestrator. Call `.RunAsync(ct)` to begin processing and retrieve `PipelineStatistics`. |
-| `PipelineOptions` | Configuration record capturing degrees of parallelism, capacities, timeouts, and batch sizes. |
+| `DataPipeline<TInput, TOutput>`    | The built orchestrator. Call `.RunAsync(ct)` to begin processing and retrieve `PipelineStatistics`.                                                                                                 |
+| `PipelineOptions`                  | Configuration record capturing degrees of parallelism, capacities, timeouts, and batch sizes.                                                                                                       |
 
 ## Usage / Example
 

@@ -37,14 +37,14 @@ public sealed class SqsDataWriter<T>(
                     DelaySeconds = req.DelaySeconds,
                     MessageAttributes = req.MessageAttributes,
                     MessageDeduplicationId = req.MessageDeduplicationId,
-                    MessageGroupId = req.MessageGroupId
+                    MessageGroupId = req.MessageGroupId,
                 };
             }).ToList();
 
             var request = new SendMessageBatchRequest
             {
                 QueueUrl = _queueUrl,
-                Entries = entries
+                Entries = entries,
             };
 
             var response = await _sqsClient.SendMessageBatchAsync(request, ct).ConfigureAwait(false);

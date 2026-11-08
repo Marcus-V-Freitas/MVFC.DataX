@@ -2,15 +2,23 @@
 
 public sealed class CsvDataWriter<T>(
     string filePath,
-    CsvConfiguration? configuration = null,
+    CsvWriterOptions
+    ? configuration = null,
     bool append = false) : IDataWriter<T>, IAsyncDisposable
 {
     private readonly string _filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-    private readonly CsvConfiguration _configuration = configuration ?? new CsvConfiguration(CultureInfo.InvariantCulture);
+
+    private readonly CsvWriterOptions _configuration = configuration ?? new CsvWriterOptions()
+    {
+        FormatProvider = CultureInfo.InvariantCulture,
+    };
+
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     private StreamWriter? _streamWriter;
+
     private CsvWriter? _csv;
+
     private bool _initialized;
 
     public async Task WriteAsync(T item, CancellationToken ct = default)
@@ -22,8 +30,7 @@ public sealed class CsvDataWriter<T>(
 
             ArgumentNullException.ThrowIfNull(_csv);
 
-            _csv.WriteRecord(item);
-            await _csv.NextRecordAsync().ConfigureAwait(false);
+            await _csv.WriteRecordAsync(item, ct);
         }
         finally
         {
@@ -60,12 +67,11 @@ public sealed class CsvDataWriter<T>(
 
         var fileExists = File.Exists(_filePath);
         _streamWriter = new StreamWriter(_filePath, append);
-        _csv = new CsvWriter(_streamWriter, _configuration);
+        _csv = CsvWriter.Create(_streamWriter, _configuration);
 
         if (!append || !fileExists)
         {
             _csv.WriteHeader<T>();
-            await _csv.NextRecordAsync().ConfigureAwait(false);
         }
 
         _initialized = true;

@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Pipeline.svg)](https://www.nuget.org/packages/MVFC.DataX.Pipeline)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Pipeline.svg)](https://www.nuget.org/packages/MVFC.DataX.Pipeline)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,13 +21,13 @@ dotnet add package MVFC.DataX.Pipeline
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
-| `PipelineBuilder` (static) | Ponto de entrada — `PipelineBuilder.ReadFrom<T>(reader)`. |
-| `PipelineBuilder<TInput>` | API Fluent que permite funções in-line como `.TransformWith()`, `.Skip()`, `.Take()`, `.Distinct()`, `.OrderBy()`, `.FlatMap()`, `.Aggregate()` e `.Batch()`. |
+| Classe                             | Descrição                                                                                                                                                                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PipelineBuilder` (static)         | Ponto de entrada — `PipelineBuilder.ReadFrom<T>(reader)`.                                                                                                                                                                      |
+| `PipelineBuilder<TInput>`          | API Fluent que permite funções in-line como `.TransformWith()`, `.Skip()`, `.Take()`, `.Distinct()`, `.OrderBy()`, `.FlatMap()`, `.Aggregate()` e `.Batch()`.                                                                  |
 | `PipelineBuilder<TInput, TOutput>` | Builder estendido com a saída definida, adicionando `.WriteTo(writer)`, `.WithParallelism(int)`, `.WithBatchSize(int)`, `.WithRetry(int, TimeSpan)`, `.WithChannelCapacity(int)`, `.OnError(writer)` e `.OnCompleted(Action)`. |
-| `DataPipeline<TInput, TOutput>` | O pipeline construído. Utilize o método `.RunAsync(ct)` para inicializá-lo e obter o resultado `PipelineStatistics`. |
-| `PipelineOptions` | Record de opções preenchido internamente para manter configurações de paralelismo, fila limitadora, e retry. |
+| `DataPipeline<TInput, TOutput>`    | O pipeline construído. Utilize o método `.RunAsync(ct)` para inicializá-lo e obter o resultado `PipelineStatistics`.                                                                                                           |
+| `PipelineOptions`                  | Record de opções preenchido internamente para manter configurações de paralelismo, fila limitadora, e retry.                                                                                                                   |
 
 ## Uso / Exemplo
 

@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Resilience.svg)](https://www.nuget.org/packages/MVFC.DataX.Resilience)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Resilience.svg)](https://www.nuget.org/packages/MVFC.DataX.Resilience)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,8 +21,8 @@ dotnet add package MVFC.DataX.Resilience
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
+| Classe                      | Descrição                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------- |
 | `PipelineBuilderExtensions` | Fornece extensões para encapsular writers com pipelines do Microsoft.Extensions.Resilience. |
 
 ## Uso / Exemplo

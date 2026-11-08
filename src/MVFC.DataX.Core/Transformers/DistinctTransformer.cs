@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Core.Transformers;
+﻿namespace MVFC.DataX.Core.Transformers;
 
 /// <summary>
 /// Remove itens duplicados do stream.
@@ -19,7 +19,7 @@ public sealed class DistinctTransformer<T>(IEqualityComparer<T>? comparer = null
     {
         var seen = new HashSet<T>(_comparer);
         var queue = _maxCapacity.HasValue ? new Queue<T>(_maxCapacity.Value) : null;
-        
+
         await foreach (var item in input.WithCancellation(ct).ConfigureAwait(false))
         {
             if (item is null)

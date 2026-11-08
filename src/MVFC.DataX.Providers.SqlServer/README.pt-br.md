@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.SqlServer.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.SqlServer)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SqlServer.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.SqlServer)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,9 +21,9 @@ dotnet add package MVFC.DataX.Providers.SqlServer
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
-| `SqlServerDataReader<T>` | Realiza queries lendo os dados através de um `SqlDataReader` mapeando os atributos manualmente em uma `Func`. |
+| Classe                   | Descrição                                                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SqlServerDataReader<T>` | Realiza queries lendo os dados através de um `SqlDataReader` mapeando os atributos manualmente em uma `Func`.                                     |
 | `SqlServerDataWriter<T>` | Escreve e injeta comandos `SqlCommand` suportando o método `WriteBatchAsync` para transações em massa (`SqlTransaction`) e rollbacks automáticos. |
 
 ## Assinaturas da API

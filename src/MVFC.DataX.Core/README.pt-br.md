@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Core.svg)](https://www.nuget.org/packages/MVFC.DataX.Core)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Core.svg)](https://www.nuget.org/packages/MVFC.DataX.Core)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,26 +21,26 @@ dotnet add package MVFC.DataX.Core
 
 ## Classes Disponíveis
 
-| Classe | Tipo | Descrição |
-|---|---|---|
-| `IDataReader<T>` | Interface | Contrato de leitura — `ReadAsync()` retorna `IAsyncEnumerable<T>` |
-| `IDataTransformer<TIn, TOut>` | Interface | Contrato de transformação — `TransformAsync()` retorna `IAsyncEnumerable<DataResult<TOut>>` |
-| `IDataWriter<T>` | Interface | Contrato de escrita — `WriteAsync()` e `WriteBatchAsync()` |
-| `DataResult<T>` | Record | Wrapper de resultado — `IsSuccess`, `Value`, `Errors`. Contém factories `DataResult.Success<T>()` e `DataResult.Failure<T>()` |
-| `DataError` | Record | Erro em dados contendo: `PropertyName`, `ErrorMessage`, `AttemptedValue` |
-| `PipelineStatistics` | Record | Estatísticas de execução: `TotalRead`, `Succeeded`, `Failed`, `Skipped`, `Elapsed`, `Errors` |
-| `EnumerableReader<T>` | Classe | Encapsula um `IEnumerable<T>` ou `IAsyncEnumerable<T>` em um `IDataReader<T>` |
-| `ChannelDataReader<T>` | Classe | Reader que consome dados a partir de um `ChannelReader<T>` |
-| `InMemoryWriter<T>` | Classe | Writer que acumula itens numa coleção `ConcurrentBag<T>` exposta pela propriedade `Items` |
-| `DelegateWriter<T>` | Classe | Writer que delega a escrita em batch a um delegate `Func<IReadOnlyList<T>, CancellationToken, Task>` |
-| `MapTransformer<TIn, TOut>` | Classe | Aplica uma função de transformação, capturando exceções como `DataResult.Failure` |
-| `FilterTransformer<T>` | Classe | Filtra os dados através de um predicado (condição) |
-| `BatchTransformer<T>` | Classe | Agrupa dados em lotes `IReadOnlyList<T>` de tamanho fixo |
-| `SkipTransformer<T>` / `TakeTransformer<T>` | Classe | Componentes de paginação |
-| `DistinctTransformer<T>` | Classe | Remove duplicatas usando um comparador |
-| `OrderByTransformer<T, TKey>` | Classe | Ordenação de fluxo em memória |
-| `FlatMapTransformer<TIn, TOut>` | Classe | Expansão 1-N (Achata listas aninhadas em fluxo contínuo) |
-| `AggregateTransformer<TIn, TAcc>` | Classe | Acumulação de estado (fold) |
+| Classe                                      | Tipo      | Descrição                                                                                                                     |
+| ------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `IDataReader<T>`                            | Interface | Contrato de leitura — `ReadAsync()` retorna `IAsyncEnumerable<T>`                                                             |
+| `IDataTransformer<TIn, TOut>`               | Interface | Contrato de transformação — `TransformAsync()` retorna `IAsyncEnumerable<DataResult<TOut>>`                                   |
+| `IDataWriter<T>`                            | Interface | Contrato de escrita — `WriteAsync()` e `WriteBatchAsync()`                                                                    |
+| `DataResult<T>`                             | Record    | Wrapper de resultado — `IsSuccess`, `Value`, `Errors`. Contém factories `DataResult.Success<T>()` e `DataResult.Failure<T>()` |
+| `DataError`                                 | Record    | Erro em dados contendo: `PropertyName`, `ErrorMessage`, `AttemptedValue`                                                      |
+| `PipelineStatistics`                        | Record    | Estatísticas de execução: `TotalRead`, `Succeeded`, `Failed`, `Skipped`, `Elapsed`, `Errors`                                  |
+| `EnumerableReader<T>`                       | Classe    | Encapsula um `IEnumerable<T>` ou `IAsyncEnumerable<T>` em um `IDataReader<T>`                                                 |
+| `ChannelDataReader<T>`                      | Classe    | Reader que consome dados a partir de um `ChannelReader<T>`                                                                    |
+| `InMemoryWriter<T>`                         | Classe    | Writer que acumula itens numa coleção `ConcurrentBag<T>` exposta pela propriedade `Items`                                     |
+| `DelegateWriter<T>`                         | Classe    | Writer que delega a escrita em batch a um delegate `Func<IReadOnlyList<T>, CancellationToken, Task>`                          |
+| `MapTransformer<TIn, TOut>`                 | Classe    | Aplica uma função de transformação, capturando exceções como `DataResult.Failure`                                             |
+| `FilterTransformer<T>`                      | Classe    | Filtra os dados através de um predicado (condição)                                                                            |
+| `BatchTransformer<T>`                       | Classe    | Agrupa dados em lotes `IReadOnlyList<T>` de tamanho fixo                                                                      |
+| `SkipTransformer<T>` / `TakeTransformer<T>` | Classe    | Componentes de paginação                                                                                                      |
+| `DistinctTransformer<T>`                    | Classe    | Remove duplicatas usando um comparador                                                                                        |
+| `OrderByTransformer<T, TKey>`               | Classe    | Ordenação de fluxo em memória                                                                                                 |
+| `FlatMapTransformer<TIn, TOut>`             | Classe    | Expansão 1-N (Achata listas aninhadas em fluxo contínuo)                                                                      |
+| `AggregateTransformer<TIn, TAcc>`           | Classe    | Acumulação de estado (fold)                                                                                                   |
 
 ## Uso / Exemplo
 

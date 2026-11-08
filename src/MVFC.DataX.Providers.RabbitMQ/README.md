@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.RabbitMQ.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.RabbitMQ)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.RabbitMQ.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.RabbitMQ)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,10 +21,10 @@ dotnet add package MVFC.DataX.Providers.RabbitMQ
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
+| Class                   | Description                                                                                                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `RabbitMqDataReader<T>` | Reads data from a RabbitMQ queue via `AsyncEventingBasicConsumer` mapped via a deserializer delegate. Automatically handles Ack/Nack responses based on completion. |
-| `RabbitMqDataWriter<T>` | Publishes items via `BasicPublishAsync`. Maintains a lazy internal connection (`IConnection`) established when writing the first time. |
+| `RabbitMqDataWriter<T>` | Publishes items via `BasicPublishAsync`. Maintains a lazy internal connection (`IConnection`) established when writing the first time.                              |
 
 ## API Signatures
 

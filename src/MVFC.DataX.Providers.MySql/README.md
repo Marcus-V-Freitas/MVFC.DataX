@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.MySql.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.MySql)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.MySql.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.MySql)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,9 +21,9 @@ dotnet add package MVFC.DataX.Providers.MySql
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
-| `MySqlDataReader<T>` | Reads data from MySQL utilizing `MySqlDataReader` via a user-defined mapping function. |
+| Class                | Description                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `MySqlDataReader<T>` | Reads data from MySQL utilizing `MySqlDataReader` via a user-defined mapping function.    |
 | `MySqlDataWriter<T>` | Writes data to MySQL using parameterized queries. Supports transactions for batch writes. |
 
 ## API Signatures

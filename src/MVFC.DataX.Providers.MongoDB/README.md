@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.MongoDB.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.MongoDB)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.MongoDB.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.MongoDB)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,10 +21,10 @@ dotnet add package MVFC.DataX.Providers.MongoDB
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
+| Class            | Description                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `MongoReader<T>` | Reads data from a Mongo Collection using an asynchronous cursor (`IAsyncCursor<T>`). Supports filters and options. |
-| `MongoWriter<T>` | Writes data using `InsertOneAsync` and batches using `InsertManyAsync`. |
+| `MongoWriter<T>` | Writes data using `InsertOneAsync` and batches using `InsertManyAsync`.                                            |
 
 ## API Signatures
 

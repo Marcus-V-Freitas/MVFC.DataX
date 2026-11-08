@@ -335,6 +335,12 @@ dotnet_naming_rule.local_functions_must_be_pascal.severity = warning
 # Desabilitar CA2007 (Não await em métodos async)
 dotnet_diagnostic.CA2007.severity = none
 
+# Ignore Task.ConfigureAwait(false)
+dotnet_diagnostic.MA0004.severity = none
+
+# Parameter null argument
+dotnet_diagnostic.MA0015.severity = none
+
 # Remover usings desnecessários
 dotnet_diagnostic.IDE0005.severity = warning
 

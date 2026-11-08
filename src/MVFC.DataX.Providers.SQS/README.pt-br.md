@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.SQS.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.SQS)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SQS.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.SQS)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,9 +21,9 @@ dotnet add package MVFC.DataX.Providers.SQS
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
-| `SqsDataReader<T>` | Cria um stream utilizando loops de *long-polling*, aplicando em seguida o `DeleteMessageAsync` na fila para todo item já iterado e extraído para a engine. |
+| Classe             | Descrição                                                                                                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SqsDataReader<T>` | Cria um stream utilizando loops de *long-polling*, aplicando em seguida o `DeleteMessageAsync` na fila para todo item já iterado e extraído para a engine.                                         |
 | `SqsDataWriter<T>` | Envia mensagens a AWS. Durante lotes (`WriteBatchAsync`), este provedor divide silenciosamente a lista provida em sublistas de 10 (limite AWS), mapeando nativamente para `SendMessageBatchAsync`. |
 
 ## Assinaturas da API

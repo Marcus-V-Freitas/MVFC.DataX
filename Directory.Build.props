@@ -4,7 +4,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
+	  <Nullable>enable</Nullable>
     <AnalysisLevel>latest</AnalysisLevel>
     <AnalysisMode>Recommended</AnalysisMode>
     <NoWarn>$(NoWarn);CA2007;CA1861</NoWarn>

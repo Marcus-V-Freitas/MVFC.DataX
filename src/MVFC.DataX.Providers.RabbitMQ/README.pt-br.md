@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.RabbitMQ.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.RabbitMQ)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.RabbitMQ.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.RabbitMQ)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,10 +21,10 @@ dotnet add package MVFC.DataX.Providers.RabbitMQ
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
+| Classe                  | Descrição                                                                                                                                                      |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `RabbitMqDataReader<T>` | Consome itens utilizando o `AsyncEventingBasicConsumer` de modo contínuo. Confirma processamentos automáticos (`BasicAckAsync`) ou reverte (`BasicNackAsync`). |
-| `RabbitMqDataWriter<T>` | Publica dados através do `BasicPublishAsync`. Garante que as conexões (`IConnection` / `IChannel`) sejam abertas por demanda (lazy init) |
+| `RabbitMqDataWriter<T>` | Publica dados através do `BasicPublishAsync`. Garante que as conexões (`IConnection` / `IChannel`) sejam abertas por demanda (lazy init)                       |
 
 ## Assinaturas da API
 

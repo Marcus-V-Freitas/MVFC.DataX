@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 ![Platform](https://img.shields.io/badge/.NET-9%20%7C%2010-blue)
 
@@ -47,21 +47,21 @@ Once you understand how to use one provider, all others work identically within 
 
 ## Packages
 
-| Package | Source/Destination | Downloads |
-|---|---|---|
-| [MVFC.DataX.Core](src/MVFC.DataX.Core/README.md) | Base abstractions | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Core) |
-| [MVFC.DataX.Pipeline](src/MVFC.DataX.Pipeline/README.md) | Pipeline Orchestrator | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Pipeline) |
-| [MVFC.DataX.Providers.FileSystem](src/MVFC.DataX.Providers.FileSystem/README.md) | Local/Network Files | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.FileSystem) |
-| [MVFC.DataX.Providers.MongoDB](src/MVFC.DataX.Providers.MongoDB/README.md) | MongoDB | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.MongoDB) |
-| [MVFC.DataX.Providers.MySql](src/MVFC.DataX.Providers.MySql/README.md) | MySQL | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.MySql) |
-| [MVFC.DataX.Providers.Postgres](src/MVFC.DataX.Providers.Postgres/README.md) | PostgreSQL | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.Postgres) |
-| [MVFC.DataX.Providers.PubSub](src/MVFC.DataX.Providers.PubSub/README.md) | Google Pub/Sub | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.PubSub) |
-| [MVFC.DataX.Providers.RabbitMQ](src/MVFC.DataX.Providers.RabbitMQ/README.md) | RabbitMQ | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.RabbitMQ) |
-| [MVFC.DataX.Providers.SQS](src/MVFC.DataX.Providers.SQS/README.md) | Amazon SQS | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SQS) |
-| [MVFC.DataX.Providers.SqlServer](src/MVFC.DataX.Providers.SqlServer/README.md) | SQL Server | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SqlServer) |
-| [MVFC.DataX.Readers.Http](src/MVFC.DataX.Readers.Http/README.md) | HTTP APIs | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Readers.Http) |
-| [MVFC.DataX.Resilience](src/MVFC.DataX.Resilience/README.md) | Polly v8 Integration | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Resilience) |
-| [MVFC.DataX.Validation](src/MVFC.DataX.Validation/README.md) | Data Validation | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Validation) |
+| Package                                                                          | Source/Destination    | Downloads                                                                     |
+| -------------------------------------------------------------------------------- | --------------------- | ----------------------------------------------------------------------------- |
+| [MVFC.DataX.Core](src/MVFC.DataX.Core/README.md)                                 | Base abstractions     | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Core)                 |
+| [MVFC.DataX.Pipeline](src/MVFC.DataX.Pipeline/README.md)                         | Pipeline Orchestrator | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Pipeline)             |
+| [MVFC.DataX.Providers.FileSystem](src/MVFC.DataX.Providers.FileSystem/README.md) | Local/Network Files   | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.FileSystem) |
+| [MVFC.DataX.Providers.MongoDB](src/MVFC.DataX.Providers.MongoDB/README.md)       | MongoDB               | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.MongoDB)    |
+| [MVFC.DataX.Providers.MySql](src/MVFC.DataX.Providers.MySql/README.md)           | MySQL                 | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.MySql)      |
+| [MVFC.DataX.Providers.Postgres](src/MVFC.DataX.Providers.Postgres/README.md)     | PostgreSQL            | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.Postgres)   |
+| [MVFC.DataX.Providers.PubSub](src/MVFC.DataX.Providers.PubSub/README.md)         | Google Pub/Sub        | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.PubSub)     |
+| [MVFC.DataX.Providers.RabbitMQ](src/MVFC.DataX.Providers.RabbitMQ/README.md)     | RabbitMQ              | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.RabbitMQ)   |
+| [MVFC.DataX.Providers.SQS](src/MVFC.DataX.Providers.SQS/README.md)               | Amazon SQS            | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SQS)        |
+| [MVFC.DataX.Providers.SqlServer](src/MVFC.DataX.Providers.SqlServer/README.md)   | SQL Server            | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SqlServer)  |
+| [MVFC.DataX.Readers.Http](src/MVFC.DataX.Readers.Http/README.md)                 | HTTP APIs             | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Readers.Http)         |
+| [MVFC.DataX.Resilience](src/MVFC.DataX.Resilience/README.md)                     | Polly v8 Integration  | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Resilience)           |
+| [MVFC.DataX.Validation](src/MVFC.DataX.Validation/README.md)                     | Data Validation       | ![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Validation)           |
 
 ***
 
@@ -136,19 +136,19 @@ await pipeline.ExecuteAsync(cancellationToken);
 ## Available API
 
 ### Reader Methods
-| Method | Description |
-|---|---|
+| Method                            | Description                                                    |
+| --------------------------------- | -------------------------------------------------------------- |
 | `ReadAsync(CancellationToken ct)` | Returns an `IAsyncEnumerable<T>` representing the data stream. |
 
 ### Transformer Methods
-| Method | Description |
-|---|---|
+| Method                                                              | Description                                        |
+| ------------------------------------------------------------------- | -------------------------------------------------- |
 | `TransformAsync(IAsyncEnumerable<TIn> input, CancellationToken ct)` | Processes the stream and yields transformed items. |
 
 ### Writer Methods
-| Method | Description |
-|---|---|
-| `WriteAsync(T item, CancellationToken ct)` | Writes a single item to the destination. |
+| Method                                                          | Description                                 |
+| --------------------------------------------------------------- | ------------------------------------------- |
+| `WriteAsync(T item, CancellationToken ct)`                      | Writes a single item to the destination.    |
 | `WriteBatchAsync(IReadOnlyList<T> items, CancellationToken ct)` | Writes a batch of items to the destination. |
 
 ## Project Structure

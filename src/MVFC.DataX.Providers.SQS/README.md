@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.SQS.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.SQS)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.SQS.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.SQS)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,9 +21,9 @@ dotnet add package MVFC.DataX.Providers.SQS
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
-| `SqsDataReader<T>` | Streams data from an SQS queue via long-polling, automatically executing `DeleteMessageAsync` for yielded messages. |
+| Class              | Description                                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `SqsDataReader<T>` | Streams data from an SQS queue via long-polling, automatically executing `DeleteMessageAsync` for yielded messages.       |
 | `SqsDataWriter<T>` | Writes item via `SendMessageAsync`. In batch context, chunks requests into sets of 10 mapping to `SendMessageBatchAsync`. |
 
 ## API Signatures

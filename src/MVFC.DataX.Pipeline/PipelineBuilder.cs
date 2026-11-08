@@ -174,7 +174,7 @@ public sealed class PipelineBuilder<TInput, TOutput>
             MaxRetries = maxRetries,
             RetryDelay = baseDelay,
             UseExponentialBackoff = true,
-            MaxRetryDelay = maxDelay
+            MaxRetryDelay = maxDelay,
         };
         return this;
     }

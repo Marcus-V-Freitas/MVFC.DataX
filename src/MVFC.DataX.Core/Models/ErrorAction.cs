@@ -1,9 +1,9 @@
-namespace MVFC.DataX.Core.Models;
+﻿namespace MVFC.DataX.Core.Models;
 
 public enum ErrorAction
 {
     Abort,
     Skip,
     Retry,
-    DeadLetter
+    DeadLetter,
 }

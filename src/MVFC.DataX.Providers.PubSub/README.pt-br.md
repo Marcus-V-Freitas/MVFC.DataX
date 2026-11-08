@@ -2,8 +2,8 @@
 
 > 🇺🇸 [Read in English](README.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.PubSub.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.PubSub)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.PubSub.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.PubSub)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,10 +21,10 @@ dotnet add package MVFC.DataX.Providers.PubSub
 
 ## Classes Disponíveis
 
-| Classe | Descrição |
-|---|---|
+| Classe                | Descrição                                                                                                                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `PubSubDataReader<T>` | Consome continuamente a subscription via `SubscriberClient.StartAsync`. Ele traduz automaticamente `Ack/Nack` para o GCP com base no status do item no Pipeline usando um Channel local em memória. |
-| `PubSubDataWriter<T>` | Publica dados no GCP via `PublisherClient.PublishAsync`. Batch actions publicam dados via array e disparam concorrência com `Task.WhenAll`. |
+| `PubSubDataWriter<T>` | Publica dados no GCP via `PublisherClient.PublishAsync`. Batch actions publicam dados via array e disparam concorrência com `Task.WhenAll`.                                                         |
 
 ## Assinaturas da API
 

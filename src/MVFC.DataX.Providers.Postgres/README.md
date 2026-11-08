@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.Postgres.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.Postgres)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.Postgres.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.Postgres)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,9 +21,9 @@ dotnet add package MVFC.DataX.Providers.Postgres
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
-| `PostgresDataReader<T>` | Reads data from PostgreSQL utilizing `NpgsqlDataReader` via a mapper function. |
+| Class                   | Description                                                                                                                            |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `PostgresDataReader<T>` | Reads data from PostgreSQL utilizing `NpgsqlDataReader` via a mapper function.                                                         |
 | `PostgresDataWriter<T>` | Writes data to PostgreSQL using parameterized queries. Supports `WriteBatchAsync` with transactions and automatic rollback on failure. |
 
 ## API Signatures

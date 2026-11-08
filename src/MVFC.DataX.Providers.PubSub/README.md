@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.PubSub.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.PubSub)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.PubSub.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.PubSub)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,10 +21,10 @@ dotnet add package MVFC.DataX.Providers.PubSub
 
 ## Available Classes
 
-| Class | Description |
-|---|---|
+| Class                 | Description                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `PubSubDataReader<T>` | Streams messages via `SubscriberClient.StartAsync`, pushing results into an internal Channel and sending Acks/Nacks back to GCP based on pipeline execution. |
-| `PubSubDataWriter<T>` | Publishes messages via `PublisherClient.PublishAsync`. Batching is handled by issuing `Task.WhenAll` concurrently. |
+| `PubSubDataWriter<T>` | Publishes messages via `PublisherClient.PublishAsync`. Batching is handled by issuing `Task.WhenAll` concurrently.                                           |
 
 ## API Signatures
 

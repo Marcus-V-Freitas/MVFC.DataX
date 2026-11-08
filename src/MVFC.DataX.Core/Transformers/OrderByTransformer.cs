@@ -1,10 +1,12 @@
+﻿using System.Globalization;
+
 namespace MVFC.DataX.Core.Transformers;
 
 /// <summary>
 /// Ordena os itens em memória.
 /// </summary>
 /// <remarks>
-/// IMPORTANTE: Este transformer acumula todos os itens lidos na memória antes de ordenar e prosseguir. 
+/// IMPORTANTE: Este transformer acumula todos os itens lidos na memória antes de ordenar e prosseguir.
 /// Deve ser utilizado com precaução em pipelines que lidam com grandes volumes de dados para evitar estouro de memória (OOM).
 /// Utilize a opção maxItems como guardrail para lançar uma exceção caso o número de itens ultrapasse o limite.
 /// </remarks>
@@ -25,7 +27,7 @@ public sealed class OrderByTransformer<T, TKey>(Func<T, TKey> keySelector, bool 
         {
             if (_maxItems.HasValue && buffer.Count >= _maxItems.Value)
             {
-                throw new InvalidOperationException($"OrderByTransformer buffer size exceeded the maximum limit of {_maxItems.Value} items.");
+                throw new InvalidOperationException($"OrderByTransformer buffer size exceeded the maximum limit of {_maxItems.Value.ToString(CultureInfo.InvariantCulture)} items.");
             }
             buffer.Add(item);
         }

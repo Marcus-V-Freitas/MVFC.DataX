@@ -2,8 +2,8 @@
 
 > 🇧🇷 [Leia em Português](README.pt-br.md)
 
-[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
+[![CI](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Marcus-V-Freitas/MVFC.DataX/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX/branch/main/graph/badge.svg?branch=main)](https://codecov.io/gh/Marcus-V-Freitas/MVFC.DataX)
 [![NuGet](https://img.shields.io/nuget/v/MVFC.DataX.Providers.FileSystem.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.FileSystem)
 [![Downloads](https://img.shields.io/nuget/dt/MVFC.DataX.Providers.FileSystem.svg)](https://www.nuget.org/packages/MVFC.DataX.Providers.FileSystem)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](../../LICENSE)
@@ -21,11 +21,11 @@ dotnet add package MVFC.DataX.Providers.FileSystem
 
 ## Available Classes
 
-| Class | Format | Description |
-|---|---|---|
-| `CsvDataReader<T>` | `.csv` | Reads CSV files sequentially leveraging CsvHelper internally. |
-| `CsvDataWriter<T>` | `.csv` | Thread-safe CSV writer leveraging a `SemaphoreSlim`. Implements `IAsyncDisposable`. |
-| `JsonlDataReader<T>` | `.jsonl` | Line-by-line JSON reading. Gracefully handles blank lines. |
+| Class                | Format   | Description                                                                                       |
+| -------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `CsvDataReader<T>`   | `.csv`   | Reads CSV files sequentially leveraging CsvHelper internally.                                     |
+| `CsvDataWriter<T>`   | `.csv`   | Thread-safe CSV writer leveraging a `SemaphoreSlim`. Implements `IAsyncDisposable`.               |
+| `JsonlDataReader<T>` | `.jsonl` | Line-by-line JSON reading. Gracefully handles blank lines.                                        |
 | `JsonlDataWriter<T>` | `.jsonl` | Thread-safe JSONL writer using `SemaphoreSlim` and `StreamWriter`. Implements `IAsyncDisposable`. |
 
 ## API Signatures

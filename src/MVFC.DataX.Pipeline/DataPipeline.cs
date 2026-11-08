@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Pipeline;
+﻿namespace MVFC.DataX.Pipeline;
 
 public sealed class DataPipeline<TInput, TOutput> : IAsyncDisposable
 {
@@ -12,5 +12,6 @@ public sealed class DataPipeline<TInput, TOutput> : IAsyncDisposable
     public Task<PipelineStatistics> RunAsync(CancellationToken ct = default) =>
         _engine.RunAsync(ct);
 
-    public ValueTask DisposeAsync() => _engine.DisposeAsync();
+    public ValueTask DisposeAsync() =>
+        _engine.DisposeAsync();
 }

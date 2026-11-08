@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Providers.FileSystem;
+﻿namespace MVFC.DataX.Providers.FileSystem;
 
 public sealed class JsonlDataReader<T>(
     string filePath,
@@ -9,7 +9,7 @@ public sealed class JsonlDataReader<T>(
 
     public async IAsyncEnumerable<T> ReadAsync([EnumeratorCancellation] CancellationToken ct = default)
     {
-        using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
+        await using var stream = new FileStream(_filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, useAsync: true);
         using var reader = new StreamReader(stream);
 
         string? line;

@@ -34,6 +34,7 @@ global using Npgsql;
 global using NSubstitute;
 global using RabbitMQ.Client;
 global using Refit;
+global using CsvHelper;
 global using RichardSzalay.MockHttp;
 global using static MVFC.DataX.Tests.AsyncEnumerableExtensions;
 global using System.Collections.Generic;

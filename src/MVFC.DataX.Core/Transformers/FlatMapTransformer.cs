@@ -1,4 +1,4 @@
-namespace MVFC.DataX.Core.Transformers;
+﻿namespace MVFC.DataX.Core.Transformers;
 
 public sealed class FlatMapTransformer<TIn, TOut>(Func<TIn, IEnumerable<TOut>?> mapFunc) : IDataTransformer<TIn, TOut>
 {
@@ -12,7 +12,7 @@ public sealed class FlatMapTransformer<TIn, TOut>(Func<TIn, IEnumerable<TOut>?> 
         {
             IEnumerable<TOut>? mapped = null;
             Exception? ex = null;
-            
+
             try
             {
                 mapped = _mapFunc(item);
